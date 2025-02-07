@@ -1,0 +1,21 @@
+# Enable the Rewrite Engine
+RewriteEngine On
+
+# Set the default page to login.php if no file is specified
+DirectoryIndex signin.php
+
+# Redirect non-logged-in users to the login page (check if session variable exists)
+RewriteCond %{REQUEST_URI} ^/$
+RewriteCond %{QUERY_STRING} !.*logged_in=1.* [NC]
+RewriteRule ^$ /signin.php [L]
+
+# Remove .php extensions from URLs
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Optional: Redirect from .php URLs to extensionless URLs
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/([^.]+)\.php [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# Handle non-existent pages with a custom 404 error page
+ErrorDocument 404 /404.php
