@@ -11,13 +11,13 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Product Name</label>
                                     <input type="text">
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Category</label>
                                     <select class="select">
@@ -26,13 +26,28 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Brand</label>
                                     <select class="select">
                                         <option>Choose Brand</option>
                                         <option>Brand</option>
                                     </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Store</label>
+                                    <select class="select">
+                                        <option>Choose Store</option>
+                                        <option>Thomas</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Product Code</label>
+                                    <input type="text">
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
@@ -46,19 +61,13 @@
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>SKU</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Minimum Qty</label>
-                                    <input type="text">
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
                                     <label>Quantity</label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Quantity Alert</label>
                                     <input type="text">
                                 </div>
                             </div>
@@ -68,7 +77,7 @@
                                     <textarea class="form-control"></textarea>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Tax</label>
                                     <select class="select">
@@ -77,17 +86,22 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Discount Type</label>
                                     <select class="select">
                                         <option>Percentage</option>
-                                        <option>10%</option>
-                                        <option>20%</option>
+                                        <option>Cash</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Discount Value</label>
+                                    <input type="text">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Price</label>
                                     <input type="text">

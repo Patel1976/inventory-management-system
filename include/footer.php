@@ -26,6 +26,13 @@
 <script src="<?php echo SITE_URL; ?>assets/plugins/chartjs/chart.min.js"></script>
 <script src="<?php echo SITE_URL; ?>assets/plugins/chartjs/chart-data.js"></script>
 
+<script src="<?php echo SITE_URL; ?>assets/js/dataTables.buttons.min.js"></script>
+<script src="<?php echo SITE_URL; ?>assets/js/pdfmake.min.js"></script>
+<script src="<?php echo SITE_URL; ?>assets/js/vfs_fonts.js"></script>
+<script src="<?php echo SITE_URL; ?>assets/js/jszip.min.js"></script>
+<script src="<?php echo SITE_URL; ?>assets/js/buttons.html5.min.js"></script>
+<script src="<?php echo SITE_URL; ?>assets/js/buttons.print.min.js"></script>
+
 <script src="<?php echo SITE_URL; ?>assets/js/script.js"></script>
 </body>
 

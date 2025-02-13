@@ -27,6 +27,8 @@
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>assets/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>assets/plugins/fontawesome/css/all.min.css">
 
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>assets/css/buttons.dataTables.min.css">
+
     <link rel="stylesheet" href="<?php echo SITE_URL; ?>assets/css/style.css">
 </head>
 

@@ -72,10 +72,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <!-- Login Form -->
                         <form method="POST" class="user">
                             <div class="form-login">
-                                <label>Email</label>
+                                <label>Username</label>
                                 <div class="form-addons">
-                                    <input type="text" name="username" id="exampleInputEmail" placeholder="Enter your email address" required>
-                                    <img src="assets/img/icons/mail.svg" alt="img">
+                                    <input type="text" name="username" id="exampleInputEmail" placeholder="Enter your username" required>
+                                    <img src="assets/img/icons/users1.svg" alt="img">
                                 </div>
                             </div>
                             <div class="form-login">

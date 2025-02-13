@@ -1,4 +1,20 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']); // Sanitize input
+    $query = "DELETE FROM categories WHERE id = $delete_id";
+
+    if (mysqli_query($conn, $query)) {
+        echo "<script>window.location.href='category-list.php?msg=deleted';</script>";
+        exit();
+    } else {
+        echo "Error deleting brand: " . mysqli_error($conn);
+    }
+}
+$query = "SELECT * FROM categories ORDER BY id DESC";
+$result = mysqli_query($conn, $query);
+?>
 
 <div class="page-wrapper">
     <div class="content">
@@ -13,61 +29,51 @@
                 </a>
             </div>
         </div>
+        <?php 
+            if (isset($_GET['msg'])) {
+                if ($_GET['msg'] == 'deleted') {
+                    echo "<div class='alert alert-danger'>Category deleted successfully!</div>";
+                } elseif ($_GET['msg'] == 'success') {
+                    echo "<div class='alert alert-success'>Category added successfully!</div>";
+                } elseif ($_GET['msg'] == 'updated') {
+                    echo "<div class='alert alert-success'>Category updated successfully!</div>";
+                }
+            }
+        ?>
         <div class="card">
             <div class="card-body">
+                <?php if (mysqli_num_rows($result) > 0) { ?>
                 <div class="table-top">
                     <div class="search-set">
-                        <div class="search-path">
-                            <a class="btn btn-filter" id="filter_search">
-                                <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg" alt="img"></span>
-                            </a>
-                        </div>
                         <div class="search-input">
-                            <a class="btn btn-searchset"><img src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img"></a>
+                            <a class="btn btn-searchset">
+                                <img src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img">
+                            </a>
                         </div>
                     </div>
                     <div class="wordset">
                         <ul>
                             <li>
-                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                        src="<?php echo SITE_URL; ?>assets/img/icons/pdf.svg" alt="img"></a>
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf">
+                                    <img src="<?php echo SITE_URL; ?>assets/img/icons/pdf.svg" alt="img">
+                                </a>
                             </li>
                             <li>
-                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                        src="<?php echo SITE_URL; ?>assets/img/icons/excel.svg" alt="img"></a>
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel">
+                                    <img src="<?php echo SITE_URL; ?>assets/img/icons/excel.svg" alt="img">
+                                </a>
                             </li>
                             <li>
-                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                        src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg" alt="img"></a>
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print">
+                                    <img src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg" alt="img">
+                                </a>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="card" id="filter_inputs">
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose Category</option>
-                                        <option>Computers</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                            alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="table-responsive">
-                    <table class="table  datanew">
+                    <table class="table datanew">
                         <thead>
                             <tr>
                                 <th>
@@ -76,330 +82,57 @@
                                         <span class="checkmarks"></span>
                                     </label>
                                 </th>
+                                <th>Image</th>
                                 <th>Category name</th>
-                                <th>Description</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Computers</a>
-                                </td>
-                                <td>Computers Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-category.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Fruits</a>
-                                </td>
-                                <td>Fruits Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-category.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Fruits</a>
-                                </td>
-                                <td>Fruits Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-category.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Fruits</a>
-                                </td>
-                                <td>Fruits Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-category.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-category.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-category.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-category.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="editcategory.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="editcategory.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="editcategory.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="editcategory.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="editcategory.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/noimage.png" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Accessories</a>
-                                </td>
-                                <td>Accessories Description</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="editcategory.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
+                            <?php
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $category_id = $row['id'];
+                                    $name = $row['name'];
+                                    $status = (strtolower($row['status']) == "active" || $row['status'] == 1) ? "Active" : "Inactive";
+                                    $image = !empty($row['image']) ? SITE_URL . "uploads/category/" . $row['image'] : SITE_URL . "assets/img/placeholder.png";
+
+                                    echo "<tr>
+                                            <td>
+                                                <label class='checkboxs'>
+                                                    <input type='checkbox'>
+                                                    <span class='checkmarks'></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <a class='product-img'>
+                                                    <img src='$image' alt='Category Image' width='50'>
+                                                </a>
+                                            </td>
+                                            <td>$name</td>
+                                            <td>$status</td>
+                                            <td>
+                                                <a class='me-3' href='add-category.php?id=$category_id'>
+                                                    <img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='Edit'>
+                                                </a>
+                                                <a class='me-3 confirm-text' href='category-list.php?delete_id=$category_id' onclick='return confirm(\"Are you sure?\")'>
+                                                    <img src='" . SITE_URL . "assets/img/icons/delete.svg' alt='Delete'>
+                                                </a>
+                                            </td>
+                                        </tr>";
+                                }
+                            ?>
                         </tbody>
                     </table>
                 </div>
+                <?php } else { ?>
+                <!-- Show this image when there are no categories -->
+                <div class="text-center">
+                    <img src="<?php echo SITE_URL; ?>assets/img/no-data-found.png" alt="No Data Found" width="300">
+                </div>
+                <?php } ?>
             </div>
         </div>
+
     </div>
 </div>
 </div>

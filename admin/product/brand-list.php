@@ -1,4 +1,18 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']); // Sanitize input
+    $query = "DELETE FROM brands WHERE id = $delete_id";
+
+    if (mysqli_query($conn, $query)) {
+        echo "<script>window.location.href='brand-list.php?msg=deleted';</script>";
+        exit();
+    } else {
+        echo "Error deleting brand: " . mysqli_error($conn);
+    }
+}
+?>
 
 <div class="page-wrapper">
     <div class="content">
@@ -8,22 +22,28 @@
                 <h6>Manage your Brand</h6>
             </div>
             <div class="page-btn">
-                <a href="add-brand.php" class="btn btn-added"><img src="<?php echo SITE_URL; ?>assets/img/icons/plus.svg" class="me-2"
-                        alt="img">Add Brand</a>
+                <a href="add-brand.php" class="btn btn-added"><img
+                        src="<?php echo SITE_URL; ?>assets/img/icons/plus.svg" class="me-2" alt="img">Add Brand</a>
             </div>
         </div>
+        <?php 
+            if (isset($_GET['msg'])) {
+                if ($_GET['msg'] == 'deleted') {
+                    echo "<div class='alert alert-danger'>Brand deleted successfully!</div>";
+                } elseif ($_GET['msg'] == 'success') {
+                    echo "<div class='alert alert-success'>Brand added successfully!</div>";
+                } elseif ($_GET['msg'] == 'updated') {
+                    echo "<div class='alert alert-success'>Brand updated successfully!</div>";
+                }
+            }
+        ?>
         <div class="card">
             <div class="card-body">
                 <div class="table-top">
                     <div class="search-set">
-                        <div class="search-path">
-                            <a class="btn btn-filter" id="filter_search">
-                                <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg" alt="img"></span>
-                            </a>
-                        </div>
                         <div class="search-input">
-                            <a class="btn btn-searchset"><img src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img"></a>
+                            <a class="btn btn-searchset"><img
+                                    src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img"></a>
                         </div>
                     </div>
                     <div class="wordset">
@@ -43,35 +63,11 @@
                         </ul>
                     </div>
                 </div>
-
-                <div class="card" id="filter_inputs">
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" placeholder="Enter Brand Name">
-                                </div>
-                            </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" placeholder="Enter Brand Description">
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                            alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="table-responsive">
                     <table class="table datanew">
                         <thead>
                             <tr>
-                                <th>
+                                <th style="width: 30px;">
                                     <label class="checkboxs">
                                         <input type="checkbox" id="select-all">
                                         <span class="checkmarks"></span>
@@ -79,84 +75,50 @@
                                 </th>
                                 <th>Image</th>
                                 <th>Brand Name</th>
-                                <th>Brand Description</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>
-                                    <a class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/brand/adidas.png" alt="product">
-                                    </a>
-                                </td>
-                                <td>Adidas</td>
-                                <td>Shoes, sportswear</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-brand.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>
-                                    <a class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/brand/colgate.png" alt="product">
-                                    </a>
-                                </td>
-                                <td>Colgate</td>
-                                <td>Oral hygiene. Toothbrushes</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-brand.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>
-                                    <a class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/brand/samsung.png" alt="product">
-                                    </a>
-                                </td>
-                                <td>samsung</td>
-                                <td>Electronics</td>
-                                <td>Active</td>
-                                <td>
-                                    <a class="me-3" href="edit-brand.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
+                            <?php
+                            $query = "SELECT * FROM brands ORDER BY id DESC";
+                            $result = mysqli_query($conn, $query);
+
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $brand_id = $row['id'];
+                                    $name = $row['name'];
+                                    $status = (strtolower($row['status']) == "active" || $row['status'] == 1) ? "Active" : "Inactive";
+                                    $image = !empty($row['image']) ? SITE_URL . "uploads/brands/" . $row['image'] : SITE_URL . "assets/img/placeholder.png";
+
+                                    echo "<tr>
+                                            <td>
+                                                <label class='checkboxs'>
+                                                    <input type='checkbox'>
+                                                    <span class='checkmarks'></span>
+                                                </label>
+                                            </td>
+                                            <td>
+                                                <a class='product-img'>
+                                                    <img src='$image' alt='Brand Image' width='50'>
+                                                </a>
+                                            </td>
+                                            <td>$name</td>
+                                            <td>$status</td>
+                                            <td>
+                                                <a class='me-3' href='add-brand.php?id=$brand_id'>
+                                                    <img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='Edit'>
+                                                </a>
+                                                <a class='me-3 confirm-text' href='brand-list.php?delete_id=$brand_id' onclick='return confirm(\"Are you sure?\")'>
+                                                    <img src='" . SITE_URL . "assets/img/icons/delete.svg' alt='Delete'>
+                                                </a>
+                                            </td>
+                                        </tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='6' class='text-center'>No brands found</td></tr>";
+                            }
+                        ?>
                         </tbody>
                     </table>
                 </div>

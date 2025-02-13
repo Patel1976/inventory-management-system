@@ -94,14 +94,14 @@ $conn->close();
                                 <label>Full Name</label>
                                 <div class="form-addons">
                                     <input type="text" name="fullname" placeholder="Enter your full name" id="exampleFullName" value="<?php echo $isUpdateMode ? $userDetails['name'] : ''; ?>" required>
-                                    <img src="assets/img/icons/users1.svg" alt="img">
+                                    <!-- <img src="assets/img/icons/users1.svg" alt="img"> -->
                                 </div>
                             </div>
                             <div class="form-login">
                                 <label>Username</label>
                                 <div class="form-addons">
                                     <input type="text" name="username" placeholder="Enter your username" id="exampleUserName" value="<?php echo $isUpdateMode ? $userDetails['username'] : ''; ?>" required>
-                                    <img src="assets/img/icons/mail.svg" alt="img">
+                                    <img src="assets/img/icons/users1.svg" alt="img">
                                 </div>
                             </div>
                             <div class="form-login">
