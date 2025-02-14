@@ -18,6 +18,7 @@ define('GENERAL_SETTINGS_URL', SITE_URL . 'admin/setting/general-settings.php');
 define('PAYMENT_SETTINGS_URL', SITE_URL . 'admin/setting/payment-settings.php');
 define('PERMISSION_URL', SITE_URL . 'admin/setting/permissions.php');
 define('TAX_RATES_URL', SITE_URL . 'admin/setting/taxrates.php');
+define('UNIT_URL', SITE_URL . 'admin/setting/units.php');
 define('PROFILE_URL', SITE_URL . 'profile.php');
 define('ADD_USER_URL', SITE_URL . 'admin/user/add-user.php');
 define('EDIT_USER_URL', SITE_URL . 'admin/user/edit-user.php');

@@ -220,6 +220,7 @@
                                 <li><a href="<?= CURRENCY_SETTINGS_URL ?>">Currency Settings</a></li>
                                 <li><a href="<?= PERMISSION_URL ?>">Group Permissions</a></li>
                                 <li><a href="<?= TAX_RATES_URL ?>">Tax Rates</a></li>
+                                <li><a href="<?= UNIT_URL ?>">Units</a></li>
                             </ul>
                         </li>
                         <li class="">

@@ -1,4 +1,20 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']); // Sanitize input
+    $query = "DELETE FROM tax_rates WHERE id = $delete_id";
+
+    if (mysqli_query($conn, $query)) {
+        echo "<script>window.location.href='taxrates.php?msg=deleted';</script>";
+        exit();
+    } else {
+        echo "Error deleting brand: " . mysqli_error($conn);
+    }
+}
+$query = "SELECT * FROM tax_rates";
+$result = mysqli_query($conn, $query);
+?>
 
 <div class="page-wrapper">
     <div class="content">
@@ -8,14 +24,25 @@
                 <h6>Manage Tax Rates</h6>
             </div>
             <div class="page-btn">
-                <a class="btn btn-added" data-bs-toggle="modal" data-bs-target="#addpayment"><img
+                <a class="btn btn-added" data-bs-toggle="modal" data-bs-target="#addtax"><img
                         src="<?php echo SITE_URL; ?>assets/img/icons/plus.svg" alt="img" class="me-1">Add New Tax
                     Rates</a>
             </div>
         </div>
-
+        <?php 
+            if (isset($_GET['msg'])) {
+                if ($_GET['msg'] == 'deleted') {
+                    echo "<div class='alert alert-danger'>Tax deleted successfully!</div>";
+                } elseif ($_GET['msg'] == 'success') {
+                    echo "<div class='alert alert-success'>Tax added successfully!</div>";
+                } elseif ($_GET['msg'] == 'updated') {
+                    echo "<div class='alert alert-success'>Tax updated successfully!</div>";
+                }
+            }
+        ?>
         <div class="card">
             <div class="card-body">
+                <?php if (mysqli_num_rows($result) > 0) { ?>
                 <div class="table-top">
                     <div class="search-set">
                         <div class="search-input">
@@ -41,10 +68,10 @@
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table  datanew">
+                    <table class="table datanew">
                         <thead>
                             <tr>
-                                <th>
+                                <th style="width: 30px;">
                                     <label class="checkboxs">
                                         <input type="checkbox">
                                         <span class="checkmarks"></span>
@@ -57,198 +84,151 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>SGST 9% </td>
-                                <td>9.00</td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user1" class="check" checked="">
-                                        <label for="user1" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td class="text-end">
-                                    <a class="me-3" href="javascript:void(0);" data-bs-toggle="modal"
-                                        data-bs-target="#editpayment">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>ISGT 9%</td>
-                                <td>9.00</td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user2" class="check" checked="">
-                                        <label for="user2" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td class="text-end">
-                                    <a class="me-3" href="javascript:void(0);" data-bs-toggle="modal"
-                                        data-bs-target="#editpayment">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>IGST 4.5% </td>
-                                <td>4.50</td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user3" class="check">
-                                        <label for="user1" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td class="text-end">
-                                    <a class="me-3" href="javascript:void(0);" data-bs-toggle="modal"
-                                        data-bs-target="#editpayment">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>SGST 4.5% </td>
-                                <td>4.50</td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user10" class="check" checked>
-                                        <label for="user10" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td class="text-end">
-                                    <a class="me-3" href="javascript:void(0);" data-bs-toggle="modal"
-                                        data-bs-target="#editpayment">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
+                            <?php
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $tax_id = $row['id'];
+                                    $name = $row['tax_name'];
+                                    $rate = $row['tax_rate'];
+                                    $status = (strtolower($row['status']) == "active" || $row['status'] == 1) ? "Active" : "Inactive";
+                            
+                                    echo "<tr>
+                                            <td>
+                                                <label class='checkboxs'>
+                                                    <input type='checkbox'>
+                                                    <span class='checkmarks'></span>
+                                                </label>
+                                            </td>
+                                            <td>$name</td>
+                                            <td>$rate</td>
+                                            <td>$status</td>
+                                            <td>
+                                                <a class='edit-tax' href='taxrates.php?id=". $tax_id ."' data-bs-toggle='modal' data-bs-target='#editTax'
+                                                    data-id='". $tax_id."' 
+                                                    data-name='". $name."' 
+                                                    data-rate='". $rate."' 
+                                                    data-status='". $status."'>
+                                                    <img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='Edit'>
+                                                </a>
+                                                <!-- Delete Button -->
+                                                <a class='confirm-text' href='taxrates.php?delete_id=". $tax_id."' onclick='return confirm(\"Are you sure?\")'>
+                                                    <img src='" . SITE_URL . "assets/img/icons/delete.svg' alt='Delete'>    
+                                                </a>
+                                            </td>
+                                        </tr>";
+                                }
+                            ?>
                         </tbody>
                     </table>
                 </div>
+                <?php } else { ?>
+                <!-- Show this image when there are no categories -->
+                <div class="text-center">
+                    <img src="<?php echo SITE_URL; ?>assets/img/no-data-found.png" alt="No Data Found" width="300">
+                </div>
+                <?php } ?>
             </div>
         </div>
     </div>
 </div>
 </div>
 
-<div class="modal fade" id="addpayment" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="addtax" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add TAX </h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>Tax Name<span class="manitory">*</span></label>
-                            <input type="text">
+            <form action="../../include/crud.php" method="POST" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Tax</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" name="tax_id" id="tax_id">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Tax Name<span class="manitory">*</span></label>
+                                <input type="text" name="tax_name" id="tax_name" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>Tax Rate(%)<span class="manitory">*</span></label>
-                            <input type="text">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Tax Rate(%)<span class="manitory">*</span></label>
+                                <input type="text" name="tax_rate" id="tax_rate" required>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group mb-0">
-                            <label>Status</label>
-                            <select class="select">
-                                <option>Choose Status</option>
-                                <option> Active</option>
-                                <option> InActive</option>
-                            </select>
+                        <div class="col-12">
+                            <div class="form-group mb-0">
+                                <label>Status</label>
+                                <select class="select" name="status" id="status" required>
+                                    <option value="Active"> Active</option>
+                                    <option value="Inactive"> InActive</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-submit">Confirm</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
-            </div>
+                <div class="modal-footer">
+                    <input type="submit" name="add_tax" value="Submit" class="btn btn-submit me-2">
+                    <input type="hidden" name="tax_id" value="<?php echo $tax_id; ?>">
+                    <a href="taxrates.php" class="btn btn-cancel">Cancel</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+<div class="modal fade" id="editTax" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="../../include/crud.php" method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Tax</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="tax_id" id="edit_tax_id">
+                    <div class="form-group">
+                        <label>Tax Name<span class="required">*</span></label>
+                        <input type="text" name="tax_name" id="edit_tax_name" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tax Rate (%)<span class="required">*</span></label>
+                        <input type="text" name="tax_rate" id="edit_tax_rate" value="" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select class="select" name="status" id="edit_status">
+                            <option value="Active" <?php echo ($status == 'Active') ? 'selected' : ''; ?>>Active</option>
+                            <option value="Inactive" <?php echo ($status == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="update_tax" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".edit-tax").forEach(function (editBtn) {
+        editBtn.addEventListener("click", function () {
+            let taxId = this.getAttribute("data-id").replace(/<\?php echo /g, "").replace(/; \?>/g, "").trim();
+            let taxName = this.getAttribute("data-name").replace(/<\?php echo /g, "").replace(/; \?>/g, "").trim();
+            let taxRate = this.getAttribute("data-rate").replace(/<\?php echo /g, "").replace(/; \?>/g, "").trim();
+            let taxStatus = this.getAttribute("data-status").replace(/<\?php echo /g, "").replace(/; \?>/g, "").trim();
 
-<div class="modal fade" id="editpayment" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Tax</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>Tax Name<span class="manitory">*</span></label>
-                            <input type="text" value="SGST 4.5%	">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label>Tax Rate(%)<span class="manitory">*</span></label>
-                            <input type="text" value="4.50">
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group mb-0">
-                            <label>Status</label>
-                            <select class="select">
-                                <option> Active</option>
-                                <option> InActive</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-submit">Update</button>
-                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
+            document.getElementById("edit_tax_id").value = taxId;
+            document.getElementById("edit_tax_name").value = taxName;
+            document.getElementById("edit_tax_rate").value = taxRate;
+            document.getElementById("edit_status").value = taxStatus;
+        });
+    });
+});
+</script>
 
 <?php include('../../include/footer.php'); ?>
