@@ -12,6 +12,8 @@ if (isset($_GET['delete_id'])) {
         echo "Error deleting brand: " . mysqli_error($conn);
     }
 }
+$query = "SELECT * FROM brands ORDER BY id ASC";
+$result = mysqli_query($conn, $query);
 ?>
 
 <div class="page-wrapper">
@@ -39,6 +41,7 @@ if (isset($_GET['delete_id'])) {
         ?>
         <div class="card">
             <div class="card-body">
+            <?php if (mysqli_num_rows($result) > 0) { ?>
                 <div class="table-top">
                     <div class="search-set">
                         <div class="search-input">
@@ -81,10 +84,6 @@ if (isset($_GET['delete_id'])) {
                         </thead>
                         <tbody>
                             <?php
-                            $query = "SELECT * FROM brands ORDER BY id DESC";
-                            $result = mysqli_query($conn, $query);
-
-                            if (mysqli_num_rows($result) > 0) {
                                 while ($row = mysqli_fetch_assoc($result)) {
                                     $brand_id = $row['id'];
                                     $name = $row['name'];
@@ -115,13 +114,16 @@ if (isset($_GET['delete_id'])) {
                                             </td>
                                         </tr>";
                                 }
-                            } else {
-                                echo "<tr><td colspan='6' class='text-center'>No brands found</td></tr>";
-                            }
-                        ?>
+                            ?>
                         </tbody>
                     </table>
                 </div>
+                <?php } else { ?>
+                <!-- Show this image when there are no categories -->
+                <div class="text-center">
+                    <img src="<?php echo SITE_URL; ?>assets/img/no-data-found.png" alt="No Data Found" width="300">
+                </div>
+                <?php } ?>
             </div>
         </div>
     </div>

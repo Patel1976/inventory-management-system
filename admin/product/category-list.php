@@ -12,7 +12,7 @@ if (isset($_GET['delete_id'])) {
         echo "Error deleting brand: " . mysqli_error($conn);
     }
 }
-$query = "SELECT * FROM categories ORDER BY id DESC";
+$query = "SELECT * FROM categories ORDER BY id ASC";
 $result = mysqli_query($conn, $query);
 ?>
 

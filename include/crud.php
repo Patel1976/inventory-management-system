@@ -165,3 +165,38 @@ elseif (isset($_POST['update_unit']) && !empty($_POST['unit_id'])) {
         echo "Error updating tax: " . mysqli_error($conn);
     }
 }
+
+// Add and Update Store
+if (isset($_POST['add_store'])) {
+    $store_name = mysqli_real_escape_string($conn, $_POST['store_name']);
+    $user_name = mysqli_real_escape_string($conn, $_POST['user_name']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $status = mysqli_real_escape_string($conn, $_POST['status']);
+    // Insert Query
+    $query = "INSERT INTO stores (store_name, user_name, password, phone, email, status) VALUES ('$store_name', '$user_name', '$password', '$phone', '$email', '$status')";
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../admin/people/store-list.php?msg=success"); // Redirect on success
+        exit();
+    } else {
+        echo "Error: " . mysqli_error($conn); // Debugging error message
+    }
+}
+elseif (isset($_POST['update_store']) && !empty($_POST['store_id'])) {
+    $store_id = $_POST['store_id'];
+    $store_name = mysqli_real_escape_string($conn, $_POST['store_name']);
+    $user_name = mysqli_real_escape_string($conn, $_POST['user_name']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $status = mysqli_real_escape_string($conn, $_POST['status']);
+    // Update query
+    $query = "UPDATE stores SET store_name='$store_name', user_name='$user_name', password='$password', phone='$phone', email='$email', status='$status' WHERE id=$store_id";
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../admin/people/store-list.php?msg=updated");
+        exit();
+    } else {
+        echo "Error updating store: " . mysqli_error($conn);
+    }
+}
