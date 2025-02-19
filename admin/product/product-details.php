@@ -1,4 +1,7 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php'); 
+?>
 
 <div class="page-wrapper">
     <div class="content">

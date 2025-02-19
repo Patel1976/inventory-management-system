@@ -200,3 +200,95 @@ elseif (isset($_POST['update_store']) && !empty($_POST['store_id'])) {
         echo "Error updating store: " . mysqli_error($conn);
     }
 }
+
+// add and update product
+if (isset($_POST['add_product'])) {
+    $product_name = mysqli_real_escape_string($conn, $_POST['product_name']);
+    $category_id = mysqli_real_escape_string($conn, $_POST['category_id']);
+    $brand_id = mysqli_real_escape_string($conn, $_POST['brand_id']);
+    $store_id = mysqli_real_escape_string($conn, $_POST['store_id']);
+    $unit_id = mysqli_real_escape_string($conn, $_POST['unit_id']);
+    $tax_id = mysqli_real_escape_string($conn, $_POST['tax_id']);
+    $product_code = mysqli_real_escape_string($conn, $_POST['product_code']);
+    $quantity = mysqli_real_escape_string($conn, $_POST['quantity']);
+    $quantity_alert = mysqli_real_escape_string($conn, $_POST['quantity_alert']);
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $discount_type = mysqli_real_escape_string($conn, $_POST['discount_type']);
+    $discount_value = mysqli_real_escape_string($conn, $_POST['discount_value']);
+    $price = mysqli_real_escape_string($conn, $_POST['price']);
+    // Handle Image Upload
+    $image_name = "";
+    if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] == 0) {
+        $image_name = time() . "_" . $_FILES['product_image']['name']; // Unique file name
+        $target_dir = "../uploads/products/"; // Ensure this folder exists
+        $target_file = $target_dir . basename($image_name);
+        // Create the uploads folder if not exists
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        // Move file to target directory
+        if (move_uploaded_file($_FILES['product_image']['tmp_name'], $target_file)) {
+            // File uploaded successfully
+        } else {
+            echo "Error uploading file.";
+            exit();
+        }
+    }
+    // Insert Query
+    $query = "INSERT INTO `products` (`name`, `category_id`, `brand_id`, `unit_id`, `store_id`, `product_code`, `quantity_alert`, `quantity`, `description`, `tax_id`, `discount_type`, `discount_value`, `price`, `image`, `created_at`, `updated_at`) 
+    VALUES ('$product_name', '$category_id', '$brand_id', '$unit_id', '$store_id', '$product_code', '$quantity_alert', '$quantity', '$description', '$tax_id', '$discount_type', '$discount_value', '$price', '$image_name', '$created_at', '$updated_at')";
+    echo $query;  // Debugging output
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../admin/product/product-list.php?msg=success"); // Redirect on success
+        exit();
+    } else {
+        echo "Error: " . mysqli_error($conn); // Debugging error message
+    }
+}
+elseif (isset($_POST['update_product']) && !empty($_POST['product_id'])) {
+    $product_id = $_POST['product_id'];
+    $product_name = mysqli_real_escape_string($conn, $_POST['product_name']);
+    $category_id = mysqli_real_escape_string($conn, $_POST['category_id']);
+    $brand_id = mysqli_real_escape_string($conn, $_POST['brand_id']);
+    $store_id = mysqli_real_escape_string($conn, $_POST['store_id']);
+    $unit_id = mysqli_real_escape_string($conn, $_POST['unit_id']);
+    $tax_id = mysqli_real_escape_string($conn, $_POST['tax_id']);
+    $product_code = mysqli_real_escape_string($conn, $_POST['product_code']);
+    $quantity = mysqli_real_escape_string($conn, $_POST['quantity']);
+    $quantity_alert = mysqli_real_escape_string($conn, $_POST['quantity_alert']);
+    $description = mysqli_real_escape_string($conn, $_POST['description']);
+    $discount_type = mysqli_real_escape_string($conn, $_POST['discount_type']);
+    $discount_value = mysqli_real_escape_string($conn, $_POST['discount_value']);
+    $price = mysqli_real_escape_string($conn, $_POST['price']);
+    // Handle image upload
+    if (!empty($_FILES['image']['name'])) {
+        $image_name = time() . "_" . $_FILES['image']['name'];
+        move_uploaded_file($_FILES['image']['tmp_name'], "../../uploads/products/" . $image_name);
+        $image_query = ", image='$image_name'";  // Notice the leading comma
+    } else {
+        $image_query = ""; // No image update
+    }
+    // Update query
+    $query = "UPDATE products SET 
+    name='$product_name', 
+    category_id='$category_id', 
+    brand_id='$brand_id', 
+    store_id='$store_id', 
+    unit_id='$unit_id', 
+    tax_id='$tax_id', 
+    product_code='$product_code', 
+    quantity_alert='$quantity_alert', 
+    quantity='$quantity', 
+    description='$description', 
+    discount_type='$discount_type', 
+    discount_value='$discount_value', 
+    price='$price' 
+    $image_query 
+    WHERE id=$product_id";
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../admin/product/product-list.php?msg=updated");
+        exit();
+    } else {
+        echo "Error updating product: " . mysqli_error($conn);
+    }
+}
