@@ -103,7 +103,13 @@ $result = mysqli_query($conn, $query);
                                                 </a>
                                             </td>
                                             <td>$name</td>
-                                            <td>$status</td>
+                                            <td>
+                                                <?php 
+                                                    $status = 'Active'; // Example status value
+                                                    $class = ($status == 'Active') ? 'bg-lightgreen' : 'bg-lightred'; 
+                                                ?>
+                                                <span class='badges <?php echo $class; ?>'>$status</span>
+                                            </td>
                                             <td>
                                                 <a class='me-3' href='add-brand.php?id=$brand_id'>
                                                     <img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='Edit'>
