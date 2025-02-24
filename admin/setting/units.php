@@ -88,7 +88,7 @@ $result = mysqli_query($conn, $query);
                                 $unit_name = $row['unit_name'];
                                 $short_name = $row['short_name'];
                                 $status = (strtolower($row['status']) == "active" || $row['status'] == 1) ? "Active" : "Inactive";
-
+                                $class = ($status == 'Active') ? 'bg-lightgreen' : 'bg-lightred';
                                 echo "<tr>
                                         <td>
                                             <label class='checkboxs'>
@@ -98,7 +98,7 @@ $result = mysqli_query($conn, $query);
                                         </td>
                                         <td>$unit_name</td>
                                         <td>$short_name</td>
-                                        <td>$status</td>
+                                        <td><span class='badges $class'>$status</span></td>
                                         <td>
                                             <a class='edit-unit' href='units.php?id=" . $unit_id . "' data-bs-toggle='modal' data-bs-target='#editunit'
                                                 data-id='" . $unit_id . "' 
@@ -133,7 +133,7 @@ $result = mysqli_query($conn, $query);
 <div class="modal fade" id="addunits" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form action="../../include/crud.php" method="POST" enctype="multipart/form-data">
+            <form action="../../include/setting_crud.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title">Add Unit</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -179,7 +179,7 @@ $result = mysqli_query($conn, $query);
 <div class="modal fade" id="editunit" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form action="../../include/crud.php" method="POST" enctype="multipart/form-data">
+            <form action="../../include/setting_crud.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Unit</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">

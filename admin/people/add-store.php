@@ -28,7 +28,7 @@ if ($store_id > 0) {
 
 <div class="page-wrapper">
     <div class="content">
-        <form action="../../include/crud.php" method="POST" enctype="multipart/form-data">
+        <form action="../../include/people_crud.php" method="POST" enctype="multipart/form-data">
             <div class="page-header">
                 <div class="page-title">
                     <h4><?php echo $store_id ? 'Update Store' : 'Add Store'; ?></h4>

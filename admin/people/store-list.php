@@ -135,7 +135,7 @@ $result = mysqli_query($conn, $query);
                                     $phone = $row['phone'];
                                     $email = $row['email'];
                                     $status = (strtolower($row['status']) == "active" || $row['status'] == 1) ? "Active" : "Inactive";
-                                    
+                                    $class = ($status == 'Active') ? 'bg-lightgreen' : 'bg-lightred';
 
                                     echo "<tr>
                                             <td>
@@ -148,7 +148,7 @@ $result = mysqli_query($conn, $query);
                                             <td>$user_name</td>
                                             <td>$phone</td>
                                             <td>$email</td>
-                                            <td>$status</td>
+                                            <td><span class='badges $class'>$status</span></td>
                                             <td>
                                                 <a class='me-3' href='add-store.php?id=$store_id'>
                                                     <img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='Edit'>

@@ -89,6 +89,7 @@ $result = mysqli_query($conn, $query);
                                     $name = $row['name'];
                                     $status = (strtolower($row['status']) == "active" || $row['status'] == 1) ? "Active" : "Inactive";
                                     $image = !empty($row['image']) ? SITE_URL . "uploads/brands/" . $row['image'] : SITE_URL . "assets/img/placeholder.png";
+                                    $class = ($status == 'Active') ? 'bg-lightgreen' : 'bg-lightred';
 
                                     echo "<tr>
                                             <td>
@@ -104,11 +105,7 @@ $result = mysqli_query($conn, $query);
                                             </td>
                                             <td>$name</td>
                                             <td>
-                                                <?php 
-                                                    $status = 'Active'; // Example status value
-                                                    $class = ($status == 'Active') ? 'bg-lightgreen' : 'bg-lightred'; 
-                                                ?>
-                                                <span class='badges <?php echo $class; ?>'>$status</span>
+                                                <span class='badges $class'>$status</span>
                                             </td>
                                             <td>
                                                 <a class='me-3' href='add-brand.php?id=$brand_id'>

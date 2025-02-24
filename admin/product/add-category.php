@@ -21,7 +21,7 @@ if ($category_id > 0) {
 
 <div class="page-wrapper">
     <div class="content">
-        <form action="../../include/crud.php" method="POST" enctype="multipart/form-data">
+        <form action="../../include/product_crud.php" method="POST" enctype="multipart/form-data">
             <div class="page-header">
                 <div class="page-title">
                     <h4><?php echo $category_id ? 'Update Category' : 'Add Category'; ?></h4>

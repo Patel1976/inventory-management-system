@@ -95,7 +95,7 @@ $result = mysqli_query($conn, $query);
                                     $name = $row['name'];
                                     $status = (strtolower($row['status']) == "active" || $row['status'] == 1) ? "Active" : "Inactive";
                                     $image = !empty($row['image']) ? SITE_URL . "uploads/category/" . $row['image'] : SITE_URL . "assets/img/placeholder.png";
-
+                                    $class = ($status == 'Active') ? 'bg-lightgreen' : 'bg-lightred';
                                     echo "<tr>
                                             <td>
                                                 <label class='checkboxs'>
@@ -109,7 +109,7 @@ $result = mysqli_query($conn, $query);
                                                 </a>
                                             </td>
                                             <td>$name</td>
-                                            <td>$status</td>
+                                            <td><span class='badges $class'>$status</span></td>
                                             <td>
                                                 <a class='me-3' href='add-category.php?id=$category_id'>
                                                     <img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='Edit'>

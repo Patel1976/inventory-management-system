@@ -90,7 +90,7 @@ $result = mysqli_query($conn, $query);
                                     $name = $row['tax_name'];
                                     $rate = $row['tax_rate'];
                                     $status = (strtolower($row['status']) == "active" || $row['status'] == 1) ? "Active" : "Inactive";
-                            
+                                    $class = ($status == 'Active') ? 'bg-lightgreen' : 'bg-lightred';
                                     echo "<tr>
                                             <td>
                                                 <label class='checkboxs'>
@@ -100,7 +100,7 @@ $result = mysqli_query($conn, $query);
                                             </td>
                                             <td>$name</td>
                                             <td>$rate</td>
-                                            <td>$status</td>
+                                            <td><span class='badges $class'>$status</span></td>
                                             <td>
                                                 <a class='edit-tax' href='taxrates.php?id=". $tax_id ."' data-bs-toggle='modal' data-bs-target='#editTax'
                                                     data-id='". $tax_id."' 
@@ -135,7 +135,7 @@ $result = mysqli_query($conn, $query);
 <div class="modal fade" id="addtax" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form action="../../include/crud.php" method="POST" enctype="multipart/form-data">
+            <form action="../../include/setting_crud.php" method="POST" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title">Add Tax</h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -180,7 +180,7 @@ $result = mysqli_query($conn, $query);
 <div class="modal fade" id="editTax" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form action="../../include/crud.php" method="POST">
+            <form action="../../include/setting_crud.php" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Tax</h5>
                     <button type="button" class="close" data-bs-dismiss="modal">
