@@ -73,14 +73,14 @@ $result = mysqli_query($conn, $query);
                             <tr>
                                 <th style="width: 30px;">
                                     <label class="checkboxs">
-                                        <input type="checkbox">
+                                        <input type="checkbox" id="select-all">
                                         <span class="checkmarks"></span>
                                     </label>
                                 </th>
                                 <th>Tax name</th>
                                 <th>Tax (%)</th>
                                 <th>Status</th>
-                                <th class="text-end">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,7 +102,7 @@ $result = mysqli_query($conn, $query);
                                             <td>$rate</td>
                                             <td><span class='badges $class'>$status</span></td>
                                             <td>
-                                                <a class='edit-tax' href='taxrates.php?id=". $tax_id ."' data-bs-toggle='modal' data-bs-target='#editTax'
+                                                <a class='edit-tax me-3' href='taxrates.php?id=". $tax_id ."' data-bs-toggle='modal' data-bs-target='#editTax'
                                                     data-id='". $tax_id."' 
                                                     data-name='". $name."' 
                                                     data-rate='". $rate."' 
@@ -110,7 +110,7 @@ $result = mysqli_query($conn, $query);
                                                     <img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='Edit'>
                                                 </a>
                                                 <!-- Delete Button -->
-                                                <a class='confirm-text' href='taxrates.php?delete_id=". $tax_id."' onclick='return confirm(\"Are you sure?\")'>
+                                                <a class='confirm-text me-3' href='taxrates.php?delete_id=". $tax_id."' onclick='return confirm(\"Are you sure?\")'>
                                                     <img src='" . SITE_URL . "assets/img/icons/delete.svg' alt='Delete'>    
                                                 </a>
                                             </td>

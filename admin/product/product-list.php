@@ -91,7 +91,7 @@ $result = mysqli_query($conn, $query);
                                 <th>Product code</th>
                                 <th>Category </th>
                                 <th>Brand</th>
-                                <th>price</th>
+                                <th>Price</th>
                                 <th>Unit</th>
                                 <th>Qty</th>
                                 <th>Action</th>
