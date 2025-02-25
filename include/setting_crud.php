@@ -168,7 +168,7 @@ elseif (isset($_POST['update_email']) && !empty($_POST['email_id'])) {
         $password = $existing_password; // Keep the old password
     }
     // Update query
-    $query = "UPDATE email_settings SET mail_host='$mail_host', mail_port='$mail_port', mail_address='$mail_address', password='$password', mail_from_name='$mail_from_name', encryption='$encryption' WHERE id=$email_id";
+    $query = "UPDATE email_settings SET mail_host='$mail_host', mail_port='$mail_port', mail_address='$mail_address', mail_password='$password', mail_from_name='$mail_from_name', encryption='$encryption' WHERE id=$email_id";
     if (mysqli_query($conn, $query)) {
         header("Location: ../admin/setting/email-settings.php?msg=updated");
         exit();

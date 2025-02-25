@@ -4,6 +4,7 @@ include('../../db_connection.php');
 $query = "SELECT * FROM email_settings";
 $result = mysqli_query($conn, $query);
 $settings = mysqli_fetch_assoc($result);
+$encryption = !empty($settings) ? $settings['encryption'] : 'tls';
 
 ?>
 
@@ -50,9 +51,9 @@ $settings = mysqli_fetch_assoc($result);
                             <div class="form-group">
                                 <label>Encryption</label>
                                 <select class="select" name="encryption" required>
-                                    <option value="tls">TLS</option>
-                                    <option value="ssl">SSL</option>
-                                    <option value="none">None</option>
+                                    <option value="tls" <?php echo ($encryption == 'tsl') ? 'selected' : ''; ?>>TLS</option>
+                                    <option value="ssl" <?php echo ($encryption == 'ssl') ? 'selected' : ''; ?>>SSL</option>
+                                    <option value="none" <?php echo ($encryption == 'none') ? 'selected' : ''; ?>>None</option>
                                 </select>
                             </div>
                         </div>
