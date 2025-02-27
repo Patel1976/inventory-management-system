@@ -153,3 +153,68 @@ if (isset($_POST['add_supplier'])) {
         echo "Error updating supplier: " . mysqli_error($conn);
     }
 }
+
+// Add and Update User
+if (isset($_POST['add_user'])) {
+    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
+    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
+    $name = trim($first_name . ' ' . $last_name);
+    $user_name = mysqli_real_escape_string($conn, $_POST['user_name']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $role = mysqli_real_escape_string($conn, $_POST['role']);
+    // Handle Image Upload
+    $image_name = "";
+    if (isset($_FILES['user_image']) && $_FILES['user_image']['error'] == 0) {
+        $image_name = time() . "_" . $_FILES['user_image']['name']; // Unique file name
+        $target_dir = "../uploads/people/"; // Ensure this folder exists
+        $target_file = $target_dir . basename($image_name);
+        // Create the uploads folder if not exists
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir, 0777, true);
+        }
+        // Move file to target directory
+        if (move_uploaded_file($_FILES['user_image']['tmp_name'], $target_file)) {
+            // File uploaded successfully
+        } else {
+            echo "Error uploading file.";
+            exit();
+        }
+    }
+    // Insert Query
+    $query = "INSERT INTO user (name, username, password, phone, email_id, role, image) VALUES ('$name', '$user_name', '$password', '$phone', '$email', '$role', '$image_name')";
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../admin/user/user-list.php?msg=success"); // Redirect on success
+        exit();
+    } else {
+        echo "Error: " . mysqli_error($conn); // Debugging error message
+    }
+}elseif (isset($_POST['update_user']) && !empty($_POST['user_id'])) {
+    $user_id = $_POST['user_id'];
+    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
+    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
+    $user_name = mysqli_real_escape_string($conn, $_POST['user_name']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $role = mysqli_real_escape_string($conn, $_POST['role']);
+    // Handle image upload
+    if (!empty($_FILES['user_image']['name'])) {
+        $image_name = time() . "_" . $_FILES['user_image']['name'];
+        move_uploaded_file($_FILES['user_image']['tmp_name'], "../uploads/people/" . $image_name);
+        $image_query = ", image='$image_name'";
+    } else {
+        $image_query = "";
+    }
+    // Update query
+    $query = "UPDATE users SET first_name='$first_name', last_name='$last_name', user_name='$user_name', password='$hashedpassword', phone='$phone', email='$email', role='$role' $image_query WHERE id=$user_id";
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../admin/people/user-list.php?msg=updated");
+        exit();
+    } else {
+        echo "Error updating user: " . mysqli_error($conn);
+    }
+}

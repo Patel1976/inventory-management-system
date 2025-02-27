@@ -176,3 +176,71 @@ elseif (isset($_POST['update_email']) && !empty($_POST['email_id'])) {
         echo "Error updating tax: " . mysqli_error($conn);
     }
 }
+
+if (isset($_POST['update_profile'])) {
+    $user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+    $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
+    $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
+    $name = trim($first_name . ' ' . $last_name); // Store full name in single field
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+    $username = mysqli_real_escape_string($conn, $_POST['username']);
+    // Handle password update only if provided
+    if (!empty($_POST['password'])) {
+        $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+        $update_password = ", password='$password'";
+    } else {
+        $update_password = "";
+    }
+    // Handle profile image upload (if provided)
+    if (!empty($_FILES['image']['name'])) {
+        $image_name = time() . "_" . $_FILES['image']['name'];
+        move_uploaded_file($_FILES['image']['tmp_name'], "../uploads/profile/" . $image_name);
+        $image_query = ", image='$image_name'";
+    } else {
+        $image_query = "";
+    }
+    // Update query
+    $query = "UPDATE user SET name='$name', email_id='$email', phone='$phone', username='$username' $update_password $image_query WHERE user_id='$user_id'";
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../admin/setting/profile.php?msg=updated");
+        exit();
+    } else {
+        echo "Error updating profile: " . mysqli_error($conn);
+    }
+}
+
+// Add and Update General Settings
+if (isset($_POST['update_general'])) {
+    $company_name = mysqli_real_escape_string($conn, $_POST['company-name']);
+    $company_email = mysqli_real_escape_string($conn, $_POST['company-email']);
+    $phone_number = mysqli_real_escape_string($conn, $_POST['phone-number']);
+    $currency = mysqli_real_escape_string($conn, $_POST['currency']);
+    $time_zone = mysqli_real_escape_string($conn, $_POST['time-zone']);
+    $date_format = mysqli_real_escape_string($conn, $_POST['date-format']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    // Handle company logo upload (if provided)
+    if (!empty($_FILES['company_logo']['name'])) {
+        $logo_name = time() . "_" . $_FILES['company_logo']['name'];
+        move_uploaded_file($_FILES['company_logo']['tmp_name'], "../uploads/logo/" . $logo_name);
+        $logo_query = ", company_logo='$logo_name'";
+    } else {
+        $logo_query = "";
+    }
+    // Handle favicon logo upload (if provided)
+    if (!empty($_FILES['favicon_icon']['name'])) {
+        $favicon_name = time() . "_" . $_FILES['favicon_icon']['name'];
+        move_uploaded_file($_FILES['favicon_icon']['tmp_name'], "../uploads/logo/" . $favicon_name);
+        $favicon_query = ", favicon_icon='$favicon_name'";
+    } else {
+        $favicon_query = "";
+    }
+    // Update query
+    $query = "UPDATE general_settings SET company_name='$company_name', company_email='$company_email', phone_number='$phone_number', currency='$currency', time_zone='$time_zone', date_format='$date_format', address='$address' $logo_query $favicon_query";
+    if (mysqli_query($conn, $query)) {
+        header("Location: ../admin/setting/general-settings.php?msg=updated");
+        exit();
+    } else {
+        echo "Error updating general settings: " . mysqli_error($conn);
+    }
+}

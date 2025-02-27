@@ -1,4 +1,22 @@
-﻿<?php include('../../include/header.php'); ?>
+﻿<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']); // Sanitize input
+    $query = "DELETE FROM user WHERE user_id = $delete_id";
+
+    if (mysqli_query($conn, $query)) {
+        echo "<script>window.location.href='user-list.php?msg=deleted';</script>";
+        exit();
+    } else {
+        echo "Error deleting user: " . mysqli_error($conn);
+    }
+}
+
+$query = "SELECT * FROM user ORDER BY user_id ASC";
+$result = mysqli_query($conn, $query);
+?>
 
 <div class="page-wrapper">
     <div class="content">
@@ -12,17 +30,22 @@
                         alt="img" class="me-2">Add User</a>
             </div>
         </div>
-
+        <?php 
+            if (isset($_GET['msg'])) {
+                if ($_GET['msg'] == 'deleted') {
+                    echo "<div class='alert alert-danger'>User deleted successfully!</div>";
+                } elseif ($_GET['msg'] == 'success') {
+                    echo "<div class='alert alert-success'>User added successfully!</div>";
+                } elseif ($_GET['msg'] == 'updated') {
+                    echo "<div class='alert alert-success'>User updated successfully!</div>";
+                }
+            }
+        ?>
         <div class="card">
             <div class="card-body">
+                <?php if (mysqli_num_rows($result) > 0) { ?>
                 <div class="table-top">
                     <div class="search-set">
-                        <div class="search-path">
-                            <a class="btn btn-filter" id="filter_search">
-                                <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg" alt="img"></span>
-                            </a>
-                        </div>
                         <div class="search-input">
                             <a class="btn btn-searchset">
                                 <img src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img">
@@ -46,51 +69,13 @@
                         </ul>
                     </div>
                 </div>
-
-                <div class="card" id="filter_inputs">
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" placeholder="Enter User Name">
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" placeholder="Enter Phone">
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" placeholder="Enter Email">
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Disable</option>
-                                        <option>Enable</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img
-                                            src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                            alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="table-responsive">
                     <table class="table  datanew">
                         <thead>
                             <tr>
                                 <th>
                                     <label class="checkboxs">
-                                        <input type="checkbox">
+                                        <input type="checkbox" id="select-all">
                                         <span class="checkmarks"></span>
                                     </label>
                                 </th>
@@ -98,618 +83,67 @@
                                 <th>First name </th>
                                 <th>Last name </th>
                                 <th>User name </th>
+                                <th>Email</th>
                                 <th>Phone</th>
-                                <th>email</th>
-                                <th>Status</th>
+                                <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer1.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Thomas</td>
-                                <td>Thomas </td>
-                                <td>Thomas21 </td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="42362a2d2f233102273a232f322e276c212d2f">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user1" class="check">
-                                        <label for="user1" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edit-user.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer2.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Benjamin</td>
-                                <td>Franklin </td>
-                                <td>504Benjamin </td>
-                                <td>123-456-888</td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="e685939592898b8394a6839e878b968a83c885898b">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user2" class="check" checked="">
-                                        <label for="user2" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edit-user.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer3.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>James</td>
-                                <td>James </td>
-                                <td>James 524 </td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="9ef4fff3fbeddefbe6fff3eef2fbb0fdf1f3">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user3" class="check" checked="">
-                                        <label for="user3" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edit-user.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer4.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Bruklin</td>
-                                <td>Bruklin </td>
-                                <td>Bruklin2022</td>
-                                <td>123-456-888</td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="781a0a0d13141116381d00191508141d561b1715">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user4" class="check" checked="">
-                                        <label for="user4" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer5.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Franklin</td>
-                                <td>Jacob </td>
-                                <td>BeverlyWIN25</td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="aceec9dac9dec0d5ecc9d4cdc1dcc0c982cfc3c1">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user5" class="check">
-                                        <label for="user5" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer6.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>B. Huber </td>
-                                <td>Jacob </td>
-                                <td>BeverlyWIN25</td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="7b330e191e093b1e031a160b171e55181416">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user6" class="check">
-                                        <label for="user6" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer7.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Alwin</td>
-                                <td>Alwin </td>
-                                <td>Alwin243</td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="0764727473686a627547627f666a776b622964686a">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user7" class="check">
-                                        <label for="user7" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer8.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Fred john</td>
-                                <td>john </td>
-                                <td>FredJ25</td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="bad0d5d2d4fadfc2dbd7cad6df94d9d5d7">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user15" class="check">
-                                        <label for="user15" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer1.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Rasmussen </td>
-                                <td>Gothic </td>
-                                <td>Cras56</td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="3a685b49574f49495f547a5f425b574a565f14595557">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user9" class="check" checked="">
-                                        <label for="user9" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer2.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Grace </td>
-                                <td>Halena </td>
-                                <td>Grace2022</td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="a0c3d5d3d4cfcdc5d2e0c5d8c1cdd0ccc58ec3cfcd">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user10" class="check" checked="">
-                                        <label for="user10" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer3.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Rasmussen </td>
-                                <td>Gothic </td>
-                                <td>Cras56</td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="702211031d050303151e301508111d001c155e131f1d">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user19" class="check" checked="">
-                                        <label for="user19" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a href="javascript:void(0);" class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/customer/customer4.jpg"
-                                            alt="product">
-                                    </a>
-                                </td>
-                                <td>Grace </td>
-                                <td>Halena </td>
-                                <td>Grace2022</td>
-                                <td>+12163547758 </td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="3e5d4b4d4a51535b4c7e5b465f534e525b105d5153">[email&#160;protected]</a>
-                                </td>
-                                <td>
-                                    <div class="status-toggle d-flex justify-content-between align-items-center">
-                                        <input type="checkbox" id="user18" class="check" checked="">
-                                        <label for="user18" class="checktoggle">checkbox</label>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a class="me-3" href="edituser.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
+                            <?php
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                $user_id = htmlspecialchars($row['user_id']);
+                                $full_name = explode(" ", htmlspecialchars($row['name']), 2);
+                                $first_name = !empty($full_name[0]) ? htmlspecialchars($full_name[0]) : 'N/A';
+                                $last_name = !empty($full_name[1]) ? htmlspecialchars($full_name[1]) : 'N/A';
+                                $username = !empty($row['username']) ? htmlspecialchars($row['username']) : 'N/A';
+                                $email = !empty($row['email_id']) ? htmlspecialchars($row['email_id']) : 'N/A';
+                                $phone = !empty($row['phone']) ? htmlspecialchars($row['phone']) : 'N/A';
+                                $role = !empty($row['role']) ? htmlspecialchars($row['role']) : 'N/A';
+                                $image = !empty($row['image']) ? SITE_URL . 'uploads/profile/' . htmlspecialchars($row['image']) : SITE_URL . 'uploads/profile/user.png';
+                                echo "<tr>
+                                    <td>
+                                        <label class='checkboxs'>
+                                            <input type='checkbox'>
+                                            <span class='checkmarks
+                                            '></span>
+                                        </label>
+                                    </td>
+                                    <td>
+                                        <div class='profile-content'>
+                                            <div class='profile-contentimg'>
+                                                <img src='$image' alt='img' width='50'>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>$first_name</td>
+                                    <td>$last_name</td>
+                                    <td>$username</td>
+                                    <td>$email</td>
+                                    <td>$phone</td>
+                                    <td>$role</td>
+                                    <td>
+                                        <div class='table-action'>
+                                            <a href='add-user.php?id=$user_id' class='me-3'><img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='img'></a>
+                                            <a href='add-user.php?id=$user_id' class='me-3 confirm-text' onclick='return confirm(\"Are you sure?\")'><img src='" . SITE_URL . "assets/img/icons/delete.svg' alt='img'></a>
+                                        </div>
+                                    </td>
+                                </tr>";
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<div class="modal fade" id="showpayment" tabindex="-1" aria-labelledby="showpayment" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Show Payments</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Reference</th>
-                                <th>Amount </th>
-                                <th>Paid By </th>
-                                <th>Paid By </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="bor-b1">
-                                <td>2022-03-07 </td>
-                                <td>INV/SL0101</td>
-                                <td>$ 1500.00 </td>
-                                <td>Cash</td>
-                                <td>
-                                    <a class="me-2" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg" alt="img">
-                                    </a>
-                                    <a class="me-2" href="javascript:void(0);" data-bs-target="#editpayment"
-                                        data-bs-toggle="modal" data-bs-dismiss="modal">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-2 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <?php } else { ?>
+                <!-- Show this image when there are no categories -->
+                <div class="text-center">
+                    <img src="<?php echo SITE_URL; ?>assets/img/no-data-found.png" alt="No Data Found" width="300">
                 </div>
+                <?php } ?>
             </div>
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="createpayment" tabindex="-1" aria-labelledby="createpayment" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Create Payment</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Customer</label>
-                            <div class="input-group">
-                                <input type="text" value="2022-03-07" class="datetimepicker">
-                                <a class="scanner-set input-group-text">
-                                    <img src="<?php echo SITE_URL; ?>assets/img/icons/datepicker.svg" alt="img">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Reference</label>
-                            <input type="text" value="INV/SL0101">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Received Amount</label>
-                            <input type="text" value="1500.00">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Paying Amount</label>
-                            <input type="text" value="1500.00">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Payment type</label>
-                            <select class="select">
-                                <option>Cash</option>
-                                <option>Online</option>
-                                <option>Inprogress</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Note</label>
-                            <textarea class="form-control"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-submit">Submit</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="editpayment" tabindex="-1" aria-labelledby="editpayment" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Edit Payment</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">×</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Customer</label>
-                            <div class="input-group">
-                                <input type="text" value="2022-03-07" class="datetimepicker">
-                                <a class="scanner-set input-group-text">
-                                    <img src="<?php echo SITE_URL; ?>assets/img/icons/datepicker.svg" alt="img">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Reference</label>
-                            <input type="text" value="INV/SL0101">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Received Amount</label>
-                            <input type="text" value="1500.00">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Paying Amount</label>
-                            <input type="text" value="1500.00">
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-sm-12 col-12">
-                        <div class="form-group">
-                            <label>Payment type</label>
-                            <select class="select">
-                                <option>Cash</option>
-                                <option>Online</option>
-                                <option>Inprogress</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Note</label>
-                            <textarea class="form-control"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-submit">Submit</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <?php include('../../include/footer.php'); ?>

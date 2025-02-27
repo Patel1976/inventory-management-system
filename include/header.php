@@ -1,4 +1,18 @@
-<?php include('config.php'); ?>
+<?php include('config.php'); 
+include($_SERVER['DOCUMENT_ROOT'] . "/projects/Inventory-Management-System/login_check.php");
+include($_SERVER['DOCUMENT_ROOT'] . "/projects/Inventory-Management-System/db_connection.php"); 
+$user_id = $_SESSION['user_id'];
+$query = "SELECT * FROM user WHERE user_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+$general_settings = $conn->query("SELECT * FROM general_settings")->fetch_assoc();
+$company_logo = !empty($general_settings['company_logo']) ? SITE_URL . 'uploads/logo/' . $general_settings['company_logo'] : SITE_URL . 'assets/img/inventory-logo.png';
+$favicon = !empty($general_settings['favicon_icon']) ? SITE_URL . 'uploads/logo/' . $general_settings['favicon_icon'] : SITE_URL . 'assets/img/favicon.png';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -40,11 +54,10 @@
         <div class="header">
             <div class="header-left active">
                 <a href="<?= DASHBOARD_URL ?>" class="logo">
-                    <!-- <img src="<?php// echo SITE_URL; ?>assets/img/logo.png" alt=""> -->
-                    <h2>INVENTORY</h2>
+                    <img src="<?php echo $company_logo; ?>" alt="">
                 </a>
                 <a href="<?= DASHBOARD_URL ?>" class="logo-small">
-                    <img src="<?php echo SITE_URL; ?>assets/img/favicon.png" alt="">
+                    <img src="<?php echo $favicon; ?>" alt="">
                 </a>
                 <a id="toggle_btn" href="javascript:void(0);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -65,18 +78,18 @@
             <ul class="nav user-menu">
                 <li class="nav-item dropdown has-arrow main-drop">
                     <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
-                        <span class="user-img"><img src="<?php echo SITE_URL; ?>assets/img/profiles/avator1.jpg" alt="">
+                        <span class="user-img"><img src="<?php echo SITE_URL . 'uploads/profile/' . ($user['image'] ?? 'user.png'); ?>" alt="">
                             <span class="status online"></span></span>
                     </a>
                     <div class="dropdown-menu menu-drop-user">
                         <div class="profilename">
                             <div class="profileset">
-                                <span class="user-img"><img src="<?php echo SITE_URL; ?>assets/img/profiles/avator1.jpg"
+                                <span class="user-img"><img src="<?php echo SITE_URL . 'uploads/profile/' . ($user['image'] ?? 'user.png'); ?>"
                                         alt="">
                                     <span class="status online"></span></span>
                                 <div class="profilesets">
-                                    <h6>John Doe</h6>
-                                    <h5>Admin</h5>
+                                    <h6><?php echo htmlspecialchars($user['name']); ?></h6>
+                                    <h5><?php echo htmlspecialchars($user['role']); ?></h5>
                                 </div>
                             </div>
                             <hr class="m-0">
