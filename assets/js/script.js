@@ -101,3 +101,61 @@ else{if(window.location.hash=="#DarkMode"){localStorage.setItem('theme','light')
 $('ul.tabs li').click(function(){var $this=$(this);var $theTab=$(this).attr('id');console.log($theTab);if($this.hasClass('active')){}else{$this.closest('.tabs_wrapper').find('ul.tabs li, .tabs_container .tab_content').removeClass('active');$('.tabs_container .tab_content[data-tab="'+$theTab+'"], ul.tabs li[id="'+$theTab+'"]').addClass('active');}});});
 document.addEventListener("DOMContentLoaded",function(){let e=window.location.pathname;document.querySelectorAll("#sidebar-menu a").forEach(function(t){if(t.href.includes(e)){let c=t.closest("li");if(c&&(c.classList.add("active"),c.closest(".submenu"))){let s=c.closest(".submenu");s.classList.add("active"),s.querySelector(".menu-arrow").classList.add("open")}}})});
 function previewImage(input, previewId) {var file = input.files[0];if (file) {var reader = new FileReader();reader.onload = function (e) {document.getElementById(previewId).src = e.target.result;};reader.readAsDataURL(file);}}
+
+function fill(productName, price, discount, tax) {
+    console.log("Selected Product:", productName, price, discount, tax); // Debugging
+    // Set the selected product name in the input field
+    $('#search').val(productName);
+    // Hide the dropdown list
+    $('#display').hide();
+    // Add the selected product to the table with correct tax
+    addProductToTable(productName, price, discount, tax);
+}
+$(document).ready(function() {
+    $("#search").keyup(function() {
+        var name = $('#search').val().trim(); // Trim spaces
+        if (name === "") {
+            $("#display").html("").hide();
+        } else {
+            $.ajax({
+                url: "../../admin/sale/ajax.php",
+                type: "POST",
+                data: { search: name },
+                success: function(response) {
+                    $("#display").html(response).show();
+                }
+            });
+        }
+    });
+    // Prevent input from being cleared after selection
+    $("#search").on("focus", function() {
+        $(this).val($(this).val());
+    });
+});
+// Function to add selected product to the table
+function addProductToTable(productName, price, discount, tax) {
+    var rowCount = $("#productTable tbody tr").length + 1;
+    var newRow = `
+        <tr>
+            <td>${rowCount}</td>
+            <td>${productName}</td>
+            <td><input type="number" class="form-control qty" value="1" min="1"></td>
+            <td class="price">${price}</td>
+            <td>${discount}</td>
+            <td>${tax}</td>
+            <td class="subtotal">${price}</td>
+            <td>
+                <a href="javascript:void(0);" class="delete-set"><img src="http://192.168.1.62/projects/Inventory-Management-System/assets/img/icons/delete.svg" alt="svg"></a>
+            </td>
+        </tr>
+    `;
+    $("#productTable tbody").append(newRow);
+}
+// Event listener for updating subtotal when quantity changes
+$(document).on("input", ".qty", function () {
+    var row = $(this).closest("tr");
+    var price = parseFloat(row.find(".price").text());
+    var qty = parseInt($(this).val());
+    var subtotal = price * qty;
+    row.find(".subtotal").text(subtotal.toFixed(2));
+});

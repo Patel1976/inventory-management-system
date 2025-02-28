@@ -124,8 +124,8 @@ $result = mysqli_query($conn, $query);
                                     <td>$role</td>
                                     <td>
                                         <div class='table-action'>
-                                            <a href='add-user.php?id=$user_id' class='me-3'><img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='img'></a>
-                                            <a href='add-user.php?id=$user_id' class='me-3 confirm-text' onclick='return confirm(\"Are you sure?\")'><img src='" . SITE_URL . "assets/img/icons/delete.svg' alt='img'></a>
+                                            <a href='add-user.php?user_id=$user_id' class='me-3'><img src='" . SITE_URL . "assets/img/icons/edit.svg' alt='img'></a>
+                                            <a href='user-list.php?delete_id=$user_id' class='me-3 confirm-text' onclick='return confirm(\"Are you sure?\")'><img src='" . SITE_URL . "assets/img/icons/delete.svg' alt='img'></a>
                                         </div>
                                     </td>
                                 </tr>";

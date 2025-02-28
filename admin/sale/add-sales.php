@@ -1,5 +1,22 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
 
+$query = "SELECT * FROM sales";
+$result = mysqli_query($conn, $query);
+$row = mysqli_fetch_assoc($result);
+if ($row) {
+    $newInvoice = $row['last_invoice'] + 1;
+    $invoice_number = 'INV-' . str_pad($newInvoice, 4, '0', STR_PAD_LEFT);
+} else {
+    $invoice_number = 'INV-0001';
+}
+
+// customer
+$query = "SELECT * FROM customers";
+$result = mysqli_query($conn, $query);
+
+?>
 <div class="page-wrapper">
     <div class="content">
         <div class="page-header">
@@ -14,15 +31,19 @@
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Invoice Number</label>
-                            <input type="text" class="form-control" value="INV-0001" readonly>
+                            <input type="text" class="form-control" name="invoice_number" value="<?php echo $invoice_number; ?>" required readonly>
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Customer</label>
                             <select class="select">
-                                <option>Choose</option>
-                                <option>Customer Name</option>
+                                <option>Choose Customer</option>
+                                <?php
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -30,7 +51,8 @@
                         <div class="form-group">
                             <label>Customer</label>
                             <div class="input-groupicon">
-                                <input type="text" placeholder="Choose Date" class="datetimepicker">
+                                <input type="text" placeholder="Choose Date" class="datetimepicker" name="order_date"
+                                    required>
                                 <a class="addonset">
                                     <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg" alt="img">
                                 </a>
@@ -41,22 +63,20 @@
                         <div class="form-group">
                             <label>Product Name</label>
                             <div class="input-groupicon">
-                                <input type="text" placeholder="Please type product code and select...">
-                                <div class="addonset">
-                                    <img src="<?php echo SITE_URL; ?>assets/img/icons/scanners.svg" alt="img">
-                                </div>
+                                <input type="text" id="search" placeholder="Please type product code and select...">
+                                <div id="display"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="table-responsive mb-3">
-                        <table class="table">
+                        <table class="table" id="productTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Product Name</th>
-                                    <th>QTY</th>
+                                    <th style="width: 100px;">QTY</th>
                                     <th>Price</th>
                                     <th>Discount</th>
                                     <th>Tax</th>
@@ -65,63 +85,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td class="productimgname">
-                                        <a class="product-img">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/product/product7.jpg"
-                                                alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Apple Earpods</a>
-                                    </td>
-                                    <td>1.00</td>
-                                    <td>15000.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                    <td>1500.00</td>
-                                    <td>
-                                        <a href="javascript:void(0);" class="delete-set"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="svg"></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td class="productimgname">
-                                        <a class="product-img">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/product/product8.jpg"
-                                                alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">iPhone 11</a>
-                                    </td>
-                                    <td>1.00</td>
-                                    <td>1500.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                    <td>1500.00</td>
-                                    <td>
-                                        <a href="javascript:void(0);" class="delete-set"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="svg"></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td class="productimgname">
-                                        <a class="product-img">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/product/product1.jpg"
-                                                alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Macbook pro</a>
-                                    </td>
-                                    <td>1.00</td>
-                                    <td>1500.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                    <td>1500.00</td>
-                                    <td>
-                                        <a href="javascript:void(0);" class="delete-set"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="svg"></a>
-                                    </td>
-                                </tr>
+                                
                             </tbody>
                         </table>
                     </div>

@@ -169,7 +169,7 @@ if (isset($_POST['add_user'])) {
     $image_name = "";
     if (isset($_FILES['user_image']) && $_FILES['user_image']['error'] == 0) {
         $image_name = time() . "_" . $_FILES['user_image']['name']; // Unique file name
-        $target_dir = "../uploads/people/"; // Ensure this folder exists
+        $target_dir = "../uploads/profile/"; // Ensure this folder exists
         $target_file = $target_dir . basename($image_name);
         // Create the uploads folder if not exists
         if (!is_dir($target_dir)) {
@@ -184,7 +184,7 @@ if (isset($_POST['add_user'])) {
         }
     }
     // Insert Query
-    $query = "INSERT INTO user (name, username, password, phone, email_id, role, image) VALUES ('$name', '$user_name', '$password', '$phone', '$email', '$role', '$image_name')";
+    $query = "INSERT INTO user (name, username, password, phone, email_id, role, image) VALUES ('$name', '$user_name', '$hashedpassword', '$phone', '$email', '$role', '$image_name')";
     if (mysqli_query($conn, $query)) {
         header("Location: ../admin/user/user-list.php?msg=success"); // Redirect on success
         exit();
@@ -192,27 +192,35 @@ if (isset($_POST['add_user'])) {
         echo "Error: " . mysqli_error($conn); // Debugging error message
     }
 }elseif (isset($_POST['update_user']) && !empty($_POST['user_id'])) {
-    $user_id = $_POST['user_id'];
+    $user_id = intval($_POST['user_id']);
     $first_name = mysqli_real_escape_string($conn, $_POST['first_name']);
     $last_name = mysqli_real_escape_string($conn, $_POST['last_name']);
+    $name = trim($first_name . ' ' . $last_name);
     $user_name = mysqli_real_escape_string($conn, $_POST['user_name']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-    $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
     $phone = mysqli_real_escape_string($conn, $_POST['phone']);
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $role = mysqli_real_escape_string($conn, $_POST['role']);
+    // Handle password update only if a new password is provided
+    if (!empty($_POST['password'])) {
+        $password = mysqli_real_escape_string($conn, $_POST['password']);
+        $hashedpassword = password_hash($password, PASSWORD_DEFAULT);
+        $password_query = ", password='$hashedpassword'";
+    } else {
+        $password_query = ""; // Keep the old password
+    }
     // Handle image upload
     if (!empty($_FILES['user_image']['name'])) {
         $image_name = time() . "_" . $_FILES['user_image']['name'];
-        move_uploaded_file($_FILES['user_image']['tmp_name'], "../uploads/people/" . $image_name);
+        move_uploaded_file($_FILES['user_image']['tmp_name'], "../uploads/profile/" . $image_name);
         $image_query = ", image='$image_name'";
     } else {
+        // Keep the old image if no new image is uploaded
         $image_query = "";
     }
     // Update query
-    $query = "UPDATE users SET first_name='$first_name', last_name='$last_name', user_name='$user_name', password='$hashedpassword', phone='$phone', email='$email', role='$role' $image_query WHERE id=$user_id";
+    $query = "UPDATE user SET name='$name', username='$user_name', phone='$phone', email_id='$email', role='$role' $password_query $image_query WHERE user_id=$user_id";
     if (mysqli_query($conn, $query)) {
-        header("Location: ../admin/people/user-list.php?msg=updated");
+        header("Location: ../admin/user/user-list.php?msg=updated");
         exit();
     } else {
         echo "Error updating user: " . mysqli_error($conn);
