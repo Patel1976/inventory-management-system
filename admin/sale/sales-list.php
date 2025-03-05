@@ -52,7 +52,7 @@
                                 </th>
                                 <th>Customer Name</th>
                                 <th>Date</th>
-                                <th>Reference</th>
+                                <th>Invoice</th>
                                 <th>Status</th>
                                 <th>Payment</th>
                                 <th>Total</th>

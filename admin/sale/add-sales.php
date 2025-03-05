@@ -94,25 +94,25 @@ $result = mysqli_query($conn, $query);
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Order Tax</label>
-                            <input type="text">
+                            <input type="text" name="order-tax">
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Discount</label>
-                            <input type="text">
+                            <input type="text" name="discount">
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Shipping</label>
-                            <input type="text">
+                            <input type="text" name="shipping">
                         </div>
                     </div>
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Status</label>
-                            <select class="select">
+                            <select class="select" name="status">
                                 <option>Choose Status</option>
                                 <option>Completed</option>
                                 <option>Inprogress</option>
@@ -125,19 +125,19 @@ $result = mysqli_query($conn, $query);
                                 <ul>
                                     <li>
                                         <h4>Order Tax</h4>
-                                        <h5>$ 0.00 (0.00%)</h5>
+                                        <h5 id="orderTax">$ 0.00 (0.00%)</h5>
                                     </li>
                                     <li>
-                                        <h4>Discount </h4>
-                                        <h5>$ 0.00</h5>
+                                        <h4>Discount</h4>
+                                        <h5 id="discountAmount">$ 0.00</h5>
                                     </li>
                                     <li>
                                         <h4>Shipping</h4>
-                                        <h5>$ 0.00</h5>
+                                        <h5 id="shippingAmount">$ 0.00</h5>
                                     </li>
                                     <li class="total">
                                         <h4>Grand Total</h4>
-                                        <h5>$ 0.00</h5>
+                                        <h5 id="grandTotal">$ 0.00</h5>
                                     </li>
                                 </ul>
                             </div>
@@ -153,5 +153,7 @@ $result = mysqli_query($conn, $query);
     </div>
 </div>
 </div>
-
+<script>
+    var siteUrl = "<?php echo SITE_URL; ?>";
+</script>
 <?php include('../../include/footer.php'); ?>

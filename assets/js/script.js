@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded",function(){let e=window.location.pa
 function previewImage(input, previewId) {var file = input.files[0];if (file) {var reader = new FileReader();reader.onload = function (e) {document.getElementById(previewId).src = e.target.result;};reader.readAsDataURL(file);}}
 
 function fill(productName, price, discount, tax) {
-    console.log("Selected Product:", productName, price, discount, tax); // Debugging
+    // console.log("Selected Product:", productName, price, discount, tax); // Debugging
     // Set the selected product name in the input field
     $('#search').val(productName);
     // Hide the dropdown list
@@ -135,6 +135,7 @@ $(document).ready(function() {
 // Function to add selected product to the table
 function addProductToTable(productName, price, discount, tax) {
     var rowCount = $("#productTable tbody tr").length + 1;
+    var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
     var newRow = `
         <tr>
             <td>${rowCount}</td>
@@ -145,7 +146,7 @@ function addProductToTable(productName, price, discount, tax) {
             <td>${tax}</td>
             <td class="subtotal">${price}</td>
             <td>
-                <a href="javascript:void(0);" class="delete-set"><img src="http://192.168.1.62/projects/Inventory-Management-System/assets/img/icons/delete.svg" alt="svg"></a>
+                <a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a>
             </td>
         </tr>
     `;
