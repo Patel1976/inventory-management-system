@@ -156,7 +156,7 @@ $favicon = !empty($general_settings['favicon_icon']) ? SITE_URL . 'uploads/logo/
                                 <li><a href="<?= ADD_PURCHASE_URL ?>">Add Purchase</a></li>
                             </ul>
                         </li>
-                        <li class="submenu">
+                        <!-- <li class="submenu">
                             <a href="javascript:void(0);"><img
                                     src="<?php echo SITE_URL; ?>assets/img/icons/expense1.svg" alt="img"><span>
                                     Expense</span> <span class="menu-arrow"></span></a>
@@ -165,7 +165,7 @@ $favicon = !empty($general_settings['favicon_icon']) ? SITE_URL . 'uploads/logo/
                                 <li><a href="<?= ADD_EXPENSE_URL ?>">Add Expense</a></li>
                                 <li><a href="<?= EXPENSE_CATEGORY_URL ?>">Expense Category</a></li>
                             </ul>
-                        </li>
+                        </li> -->
                         <li class="submenu">
                             <a href="javascript:void(0);"><img
                                     src="<?php echo SITE_URL; ?>assets/img/icons/transfer1.svg" alt="img"><span>
@@ -209,7 +209,7 @@ $favicon = !empty($general_settings['favicon_icon']) ? SITE_URL . 'uploads/logo/
                                 <li><a href="<?= INVENTORY_REPORT_URL ?>">Inventory Report</a></li>
                                 <li><a href="<?= SUPPLIER_REPORT_URL ?>">Supplier Report</a></li>
                                 <li><a href="<?= CUSTOMER_REPORT_URL ?>">Customer Report</a></li>
-                                <li><a href="<?= EXPENSE_REPORT_URL ?>">Expense Report</a></li>
+                                <!-- <li><a href="<?= EXPENSE_REPORT_URL ?>">Expense Report</a></li> -->
                                 <li><a href="<?= TAX_REPORT_URL ?>">Tax report</a></li>
                             </ul>
                         </li>
@@ -231,7 +231,7 @@ $favicon = !empty($general_settings['favicon_icon']) ? SITE_URL . 'uploads/logo/
                                 <li><a href="<?= EMAIL_SETTINGS_URL ?>">Email Settings</a></li>
                                 <li><a href="<?= PAYMENT_SETTINGS_URL ?>">Payment Settings</a></li>
                                 <li><a href="<?= CURRENCY_SETTINGS_URL ?>">Currency Settings</a></li>
-                                <li><a href="<?= PERMISSION_URL ?>">Group Permissions</a></li>
+                                <!-- <li><a href="<?= PERMISSION_URL ?>">Group Permissions</a></li> -->
                                 <li><a href="<?= TAX_RATES_URL ?>">Tax Rates</a></li>
                                 <li><a href="<?= UNIT_URL ?>">Units</a></li>
                             </ul>

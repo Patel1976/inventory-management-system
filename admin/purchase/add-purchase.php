@@ -11,26 +11,22 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Supplier Name</label>
-                            <div class="row">
-                                <div class="col-lg-10 col-sm-10 col-10">
-                                    <select class="select">
-                                        <option>Select</option>
-                                        <option>Supplier</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                    <div class="add-icon">
-                                        <a href="javascript:void(0);"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/plus1.svg" alt="img"></a>
-                                    </div>
-                                </div>
-                            </div>
+                            <label>Invoice No.</label>
+                            <input type="text">
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Supplier Name</label>
+                            <select class="select">
+                                <option>Select</option>
+                                <option>Supplier</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Purchase Date </label>
                             <div class="input-groupicon">
@@ -39,21 +35,6 @@
                                     <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg" alt="img">
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Product Name</label>
-                            <select class="select">
-                                <option>Choose</option>
-                                <option>Supplier Name</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Reference No.</label>
-                            <input type="text">
                         </div>
                     </div>
                     <div class="col-lg-12 col-sm-6 col-12">
@@ -100,26 +81,6 @@
                                     <td>0.00</td>
                                     <td class="text-end">2000.00</td>
                                     <td class="text-end">2000.00</td>
-                                    <td>
-                                        <a class="delete-set"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="svg"></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="productimgname">
-                                        <a class="product-img">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/product/product6.jpg"
-                                                alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Macbook Pro</a>
-                                    </td>
-                                    <td>15.00</td>
-                                    <td>6000.00</td>
-                                    <td>100.00</td>
-                                    <td>0.00</td>
-                                    <td>0.00</td>
-                                    <td class="text-end">1000.00</td>
-                                    <td class="text-end">1000.00</td>
                                     <td>
                                         <a class="delete-set"><img
                                                 src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="svg"></a>
@@ -180,12 +141,6 @@
                                 <option>Completed</option>
                                 <option>Inprogress</option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea class="form-control"></textarea>
                         </div>
                     </div>
                     <div class="col-lg-12">

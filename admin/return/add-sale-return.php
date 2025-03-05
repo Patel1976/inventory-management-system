@@ -11,28 +11,18 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
                             <label>Customer Name</label>
-                            <div class="row">
-                                <div class="col-lg-10 col-sm-10 col-10">
-                                    <select class="select ">
-                                        <option>Select Customer</option>
-                                        <option>Customer</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                                    <div class="add-icon">
-                                        <a href="javascript:void(0);"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/plus1.svg" alt="img"></a>
-                                    </div>
-                                </div>
-                            </div>
+                            <select class="select ">
+                                <option>Select Customer</option>
+                                <option>Customer</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Quotation Date</label>
+                            <label>Return Date</label>
                             <div class="input-groupicon">
                                 <input type="text" placeholder="DD-MM-YYYY" class="datetimepicker">
                                 <div class="addonset">
@@ -41,9 +31,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+                    <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Reference No.</label>
+                            <label>Invoice No.</label>
                             <input type="text">
                         </div>
                     </div>
@@ -60,7 +50,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="table-responsive">
+                    <div class="table-responsive mb-3">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -117,30 +107,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12 float-md-right">
-                        <div class="total-order">
-                            <ul>
-                                <li>
-                                    <h4>Order Tax</h4>
-                                    <h5>$ 0.00 (0.00%)</h5>
-                                </li>
-                                <li>
-                                    <h4>Discount </h4>
-                                    <h5>$ 0.00</h5>
-                                </li>
-                                <li>
-                                    <h4>Shipping</h4>
-                                    <h5>$ 0.00</h5>
-                                </li>
-                                <li class="total">
-                                    <h4>Grand Total</h4>
-                                    <h5>$ 0.00</h5>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                
                 <div class="row">
                     <div class="col-lg-3 col-sm-6 col-12">
                         <div class="form-group">
@@ -170,12 +137,32 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea class="form-control"></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 float-md-right">
+                        <div class="total-order mt-0">
+                            <ul>
+                                <li>
+                                    <h4>Order Tax</h4>
+                                    <h5>$ 0.00 (0.00%)</h5>
+                                </li>
+                                <li>
+                                    <h4>Discount </h4>
+                                    <h5>$ 0.00</h5>
+                                </li>
+                                <li>
+                                    <h4>Shipping</h4>
+                                    <h5>$ 0.00</h5>
+                                </li>
+                                <li class="total">
+                                    <h4>Grand Total</h4>
+                                    <h5>$ 0.00</h5>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-lg-12">
                         <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
                         <a href="sales-return-list.php" class="btn btn-cancel">Cancel</a>

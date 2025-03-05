@@ -49,7 +49,7 @@ $result = mysqli_query($conn, $query);
                     </div>
                     <div class="col-lg-4 col-sm-6 col-12">
                         <div class="form-group">
-                            <label>Customer</label>
+                            <label>Sale Date</label>
                             <div class="input-groupicon">
                                 <input type="text" placeholder="Choose Date" class="datetimepicker" name="order_date"
                                     required>

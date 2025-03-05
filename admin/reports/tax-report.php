@@ -28,13 +28,6 @@
                             aria-labelledby="purchase-tab">
                             <div class="table-top">
                                 <div class="search-set">
-                                    <div class="search-path">
-                                        <a class="btn btn-filter" id="filter_search">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                            <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg"
-                                                    alt="img"></span>
-                                        </a>
-                                    </div>
                                     <div class="search-input">
                                         <a class="btn btn-searchset"><img
                                                 src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg"
@@ -58,50 +51,6 @@
                                                     alt="img"></a>
                                         </li>
                                     </ul>
-                                </div>
-                            </div>
-
-                            <div class="card" id="filter_inputs">
-                                <div class="card-body pb-0">
-                                    <div class="row">
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="From Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="To Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <select class="select">
-                                                    <option>Choose Suppliers</option>
-                                                    <option>Suppliers</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                            <div class="form-group">
-                                                <a class="btn btn-filters ms-auto"><img
-                                                        src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                                        alt="img"></a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
@@ -155,36 +104,6 @@
                                             <td>12</td>
                                             <td>$265</td>
                                         </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>Tracy</td>
-                                            <td>23 Sep 2023</td>
-                                            <td>#7590325</td>
-                                            <td>$52,000</td>
-                                            <td>PayPal</td>
-                                            <td>20</td>
-                                            <td>$382</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>Victor</td>
-                                            <td>05 Sep 2023</td>
-                                            <td>#9814586</td>
-                                            <td>$18,000</td>
-                                            <td>PayPal</td>
-                                            <td>15</td>
-                                            <td>$561</td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -192,13 +111,6 @@
                         <div class="tab-pane fade" id="sale" role="tabpanel">
                             <div class="table-top">
                                 <div class="search-set">
-                                    <div class="search-path">
-                                        <a class="btn btn-filter" id="filter_search2">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                            <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg"
-                                                    alt="img"></span>
-                                        </a>
-                                    </div>
                                     <div class="search-input">
                                         <a class="btn btn-searchset"><img
                                                 src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg"
@@ -224,50 +136,6 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="card" id="filter_inputs2">
-                                <div class="card-body pb-0">
-                                    <div class="row">
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="From Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="To Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <select class="select">
-                                                    <option>Choose Customer</option>
-                                                    <option>Customer</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                            <div class="form-group">
-                                                <a class="btn btn-filters ms-auto"><img
-                                                        src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                                        alt="img"></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="table-responsive">
                                 <table class="table datanew">
                                     <thead>
@@ -288,36 +156,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>Lavi</td>
-                                            <td>12 Jul 2023</td>
-                                            <td>INV2750916</td>
-                                            <td>$30,000</td>
-                                            <td>PayPal</td>
-                                            <td>10</td>
-                                            <td>$457</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>Anthony</td>
-                                            <td>18 Aug 2023</td>
-                                            <td>INV2750913</td>
-                                            <td>$40,000</td>
-                                            <td>Stripe</td>
-                                            <td>12</td>
-                                            <td>$265</td>
-                                        </tr>
                                         <tr>
                                             <td>
                                                 <label class="checkboxs">

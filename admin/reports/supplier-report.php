@@ -11,7 +11,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="tabs-set">
-                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="purchase-tab" data-bs-toggle="tab"
                                 data-bs-target="#purchase" type="button" role="tab" aria-controls="purchase"
@@ -25,19 +25,12 @@
                             <button class="nav-link" id="return-tab" data-bs-toggle="tab" data-bs-target="#return"
                                 type="button" role="tab" aria-controls="return" aria-selected="false">Return</button>
                         </li>
-                    </ul>
+                    </ul> -->
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="purchase" role="tabpanel"
                             aria-labelledby="purchase-tab">
                             <div class="table-top">
                                 <div class="search-set">
-                                    <div class="search-path">
-                                        <a class="btn btn-filter" id="filter_search">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                            <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg"
-                                                    alt="img"></span>
-                                        </a>
-                                    </div>
                                     <div class="search-input">
                                         <a class="btn btn-searchset"><img
                                                 src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg"
@@ -64,42 +57,6 @@
                                 </div>
                             </div>
 
-                            <div class="card" id="filter_inputs">
-                                <div class="card-body pb-0">
-                                    <div class="row">
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="From Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="To Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                            <div class="form-group">
-                                                <a class="btn btn-filters ms-auto"><img
-                                                        src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                                        alt="img"></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="table-responsive">
                                 <table class="table datanew">
                                     <thead>
@@ -120,111 +77,6 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product1.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Macbook pro</a>
-                                            </td>
-                                            <td>38698.00</td>
-                                            <td>1248</td>
-                                            <td>0.00</td>
-                                            <td>38698.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product2.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Orange</a>
-                                            </td>
-                                            <td>36080.00</td>
-                                            <td>110</td>
-                                            <td>0.00</td>
-                                            <td>36080.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product3.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Pineapple</a>
-                                            </td>
-                                            <td>21000.00</td>
-                                            <td>106</td>
-                                            <td>0.00</td>
-                                            <td>21000.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product4.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Strawberry</a>
-                                            </td>
-                                            <td>11000.00</td>
-                                            <td>105</td>
-                                            <td>0.00</td>
-                                            <td>11000.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product5.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Sunglasses</a>
-                                            </td>
-                                            <td>10100.00</td>
-                                            <td>100</td>
-                                            <td>0.00</td>
-                                            <td>10600.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
                                         <tr>
                                             <td>
                                                 <label class="checkboxs">
@@ -277,117 +129,12 @@
                                             <td>07/12/2021 06:58:25</td>
                                             <td class="productimgname">
                                                 <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product8.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Banana</a>
-                                            </td>
-                                            <td>900.00</td>
-                                            <td>28</td>
-                                            <td>0.00</td>
-                                            <td>900.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
                                                     <img src="<?php echo SITE_URL; ?>assets/img/product/product9.jpg"
                                                         alt="product">
                                                 </a>
                                                 <a href="javascript:void(0);">Earphones</a>
                                             </td>
                                             <td>500.00</td>
-                                            <td>28</td>
-                                            <td>0.00</td>
-                                            <td>500.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product10.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Limon</a>
-                                            </td>
-                                            <td>1500.00</td>
-                                            <td>28</td>
-                                            <td>0.00</td>
-                                            <td>500.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product8.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Banana</a>
-                                            </td>
-                                            <td>900.00</td>
-                                            <td>28</td>
-                                            <td>0.00</td>
-                                            <td>900.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product9.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Earphones</a>
-                                            </td>
-                                            <td>500.00</td>
-                                            <td>28</td>
-                                            <td>0.00</td>
-                                            <td>500.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product10.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Limon</a>
-                                            </td>
-                                            <td>1500.00</td>
                                             <td>28</td>
                                             <td>0.00</td>
                                             <td>500.00</td>

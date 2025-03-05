@@ -17,12 +17,6 @@
             <div class="card-body">
                 <div class="table-top">
                     <div class="search-set">
-                        <div class="search-path">
-                            <a class="btn btn-filter" id="filter_search">
-                                <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg" alt="img"></span>
-                            </a>
-                        </div>
                         <div class="search-input">
                             <a class="btn btn-searchset">
                                 <img src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img">
@@ -44,39 +38,6 @@
                                         src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg" alt="img"></a>
                             </li>
                         </ul>
-                    </div>
-                </div>
-
-                <div class="card" id="filter_inputs">
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" class="datetimepicker cal-icon" placeholder="Choose Date">
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" placeholder="Enter Reference">
-                                </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose Status</option>
-                                        <option>Inprogress</option>
-                                        <option>Complete</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img
-                                            src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                            alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -143,96 +104,6 @@
                                 <td>40</td>
                                 <td>
                                     <a class="me-3" href="edit-stock-adjustment.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>Sony Bravia Google TV</td>
-                                <td>14</td>
-                                <td>
-                                    <a class="me-3" href="edit-stock-adjustment.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>Sony ZX110NC Headphones</td>
-                                <td>50</td>
-                                <td>
-                                    <a class="me-3" href="edit-stock-adjustment.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>Apple EarPods</td>
-                                <td>35</td>
-                                <td>
-                                    <a class="me-3" href="edittransfer.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>OPPO A15s</td>
-                                <td>13</td>
-                                <td>
-                                    <a class="me-3" href="edittransfer.html">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>Sony 75 Inch TV</td>
-                                <td>40</td>
-                                <td>
-                                    <a class="me-3" href="edittransfer.html">
                                         <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
                                     </a>
                                     <a class="me-3 confirm-text" href="javascript:void(0);">
