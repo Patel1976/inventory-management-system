@@ -102,13 +102,8 @@ $('ul.tabs li').click(function(){var $this=$(this);var $theTab=$(this).attr('id'
 document.addEventListener("DOMContentLoaded",function(){let e=window.location.pathname;document.querySelectorAll("#sidebar-menu a").forEach(function(t){if(t.href.includes(e)){let c=t.closest("li");if(c&&(c.classList.add("active"),c.closest(".submenu"))){let s=c.closest(".submenu");s.classList.add("active"),s.querySelector(".menu-arrow").classList.add("open")}}})});
 function previewImage(input, previewId) {var file = input.files[0];if (file) {var reader = new FileReader();reader.onload = function (e) {document.getElementById(previewId).src = e.target.result;};reader.readAsDataURL(file);}}
 
-<<<<<<< HEAD
 function fill(productName, price, tax) {
     console.log("Selected Product:", productName, price, tax); // Debugging
-=======
-function fill(productName, price, discount, tax) {
-    // console.log("Selected Product:", productName, price, discount, tax); // Debugging
->>>>>>> 25151ab2b4c47b0233ffd62b59e1ef6ed8f03af3
     // Set the selected product name in the input field
     $('#search').val(productName);
     // Hide the dropdown list
