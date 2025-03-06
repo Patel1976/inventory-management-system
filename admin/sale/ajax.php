@@ -2,7 +2,7 @@
 
 if (isset($_POST['search'])) {
     $search = trim($_POST['search']);
-    $query = "SELECT p.name, p.price, p.discount_type, p.discount_value, t.tax_rate 
+    $query = "SELECT p.name, p.price, t.tax_rate 
         FROM products p LEFT JOIN tax_rates t ON p.tax_id = t.id 
         WHERE p.name LIKE '%$search%'";
     $result = mysqli_query($conn, $query);
@@ -11,11 +11,9 @@ if (isset($_POST['search'])) {
         while ($row = mysqli_fetch_assoc($result)) {
             $name = $row['name'];
             $price = $row['price'];
-            $discount_type = $row['discount_type'] == 'Percentage' ? '%' : '$';
-            $discount = $row['discount_value'] . '' . $discount_type;
             $tax = isset($row['tax_rate']) ? $row['tax_rate'] : 0; 
 
-            echo "<li onclick='fill(\"$name\", \"$price\", \"$discount\", \"$tax\")'>$name - $$price</li>";
+            echo "<li onclick='fill(\"$name\", \"$price\", \"$tax\")'>$name - $$price</li>";
         }
     } else {
         echo "<li>No products found</li>";

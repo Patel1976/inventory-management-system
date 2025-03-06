@@ -201,25 +201,25 @@ $result = mysqli_query($conn, $query);
                         <div class="col-12">
                             <div class="form-group">
                                 <label>Currency Name</label>
-                                <input type="text" name="curr_name" required>
+                                <input type="text" id="edit_currency_name" name="curr_name" required>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
                                 <label>Currency Code</label>
-                                <input type="text" name="curr_code" required>
+                                <input type="text" id="edit_currency_code" name="curr_code" required>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group">
                                 <label>Currency Symbol</label>
-                                <input type="text" name="curr_symbol" required>
+                                <input type="text" id="edit_currency_symbol" name="curr_symbol" required>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="form-group mb-0">
                                 <label>Status</label>
-                                <select class="select" name="status" required>
+                                <select class="select" id="edit_currency_status" name="status" required>
                                     <option value="Active" <?php echo ($status == 'Active') ? 'selected' : ''; ?>>Active</option>
                                     <option value="Inactive" <?php echo ($status == 'Inactive') ? 'selected' : ''; ?>>Inactive</option>
                                 </select>
@@ -228,7 +228,7 @@ $result = mysqli_query($conn, $query);
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" name="update_currency" class="btn btn-submit" value="Submit">
+                    <input type="submit" name="update_currency" class="btn btn-submit" value="Update">
                     <a href="currency-settings.php" class="btn btn-cancel">Cancel</a>
                 </div>
             </form>
