@@ -2,41 +2,59 @@
 include('../../include/header.php');
 include('../../db_connection.php');
 
-// Get the latest invoice number from the database
-$inv_query = "SELECT invoice_number FROM sales ORDER BY id DESC LIMIT 1";
-$inv_result = mysqli_query($conn, $inv_query);
-$inv_row = mysqli_fetch_assoc($inv_result);
-if ($inv_row) {
-    // Extract numeric part from the invoice (e.g., INV-0001 -> 0001)
-    preg_match('/\d+$/', $inv_row['invoice_number'], $matches);
-    $newInvoice = isset($matches[0]) ? intval($matches[0]) + 1 : 1;
-    // Generate new invoice number (format: INV-XXXX)
-    $invoice_number = 'INV-' . str_pad($newInvoice, 4, '0', STR_PAD_LEFT);
-} else {
-    // First invoice case
-    $invoice_number = 'INV-0001';
+$sale_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if ($sale_id > 0) {
+    $sale_query = "SELECT * FROM sales WHERE id = $sale_id";
+    $sale_result = mysqli_query($conn, $sale_query);
+    if ($sale_result && mysqli_num_rows($sale_result) > 0) {
+        $row = mysqli_fetch_assoc($sale_result);
+        $discount = isset($row['discount']) ? $row['discount'] : '';
+        $shipping = isset($row['shipping']) ? $row['shipping'] : '';
+        $paid_payment = isset($row['paid_amount']) ? $row['paid_amount'] : '';
+        $status = isset($row['status']) ? $row['status'] : '';
+        $tax_id = isset($row['order_tax_id']) ? $row['order_tax_id'] : '';
+        $payment_type = isset($row['payment_type']) ? $row['payment_type'] : '';
+    }
 }
-
+// Get the latest invoice number from the database
+if ($sale_id == 0) {
+    $inv_query = "SELECT invoice_number FROM sales ORDER BY id DESC LIMIT 1";
+    $inv_result = mysqli_query($conn, $inv_query);
+    $inv_row = mysqli_fetch_assoc($inv_result);
+    if ($inv_row) {
+        // Extract numeric part from the invoice (e.g., INV-0001 -> 0001)
+        preg_match('/\d+$/', $inv_row['invoice_number'], $matches);
+        $newInvoice = isset($matches[0]) ? intval($matches[0]) + 1 : 1;
+        // Generate new invoice number (format: INV-XXXX)
+        $invoice_number = 'INV-' . str_pad($newInvoice, 4, '0', STR_PAD_LEFT);
+    } else {
+        // First invoice case
+        $invoice_number = 'INV-0001';
+    }
+}
+else{
+    $invoice_number = $row['invoice_number'];
+}
 $cust_query = "SELECT * FROM customers";
 $cust_result = mysqli_query($conn, $cust_query);
+
 // Fetch taxes
-$tax_id = "";
 $tax_query = "SELECT id, tax_name, tax_rate FROM tax_rates WHERE status = 'Active'";
 $tax_result = mysqli_query($conn, $tax_query);
 // Fetch payment type
-$pay_id = "";
 $pay_query = "SELECT id, payment_name FROM payment_types WHERE status = 'Active'";
 $pay_result = mysqli_query($conn, $pay_query);
 // Fetch active currency symbol from the database
-$query = "SELECT currency_symbol FROM currencies WHERE status = 'Active' LIMIT 1";
-$result = mysqli_query($conn, $query);
-$row = mysqli_fetch_assoc($result);
-$currencySymbol = $row['currency_symbol'] ?? '$';
+$curr_query = "SELECT currency_symbol FROM currencies WHERE status = 'Active' LIMIT 1";
+$curr_result = mysqli_query($conn, $curr_query);
+$curr_row = mysqli_fetch_assoc($curr_result);
+$currencySymbol = $curr_row['currency_symbol'] ?? '$';
 ?>
 <div class="page-wrapper">
     <div class="content">
         <form action="../../include/sale_crud.php" method="POST" enctype="multipart/form-data" id="saleForm">
         <input type="hidden" name="total_amount" id="total_amount">
+        <input type="hidden" name="sale_item_data" id="sale_item_data">
             <div class="page-header">
                 <div class="page-title">
                     <h4>Add Sale</h4>
@@ -57,10 +75,11 @@ $currencySymbol = $row['currency_symbol'] ?? '$';
                             <div class="form-group">
                                 <label>Customer</label>
                                 <select class="select" name="customer" required>
-                                    <option>Choose Customer</option>
+                                    <option value="">Choose Customer</option>
                                     <?php
-                                    while ($row = mysqli_fetch_assoc($cust_result)) {
-                                        echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+                                    while ($cust_row = mysqli_fetch_assoc($cust_result)) {
+                                        $selected = ($sale_id > 0 && isset($row['customer_id']) && $row['customer_id'] == $cust_row['id']) ? 'selected' : '';
+                                        echo "<option value='" . $cust_row['id'] . "' $selected>" . $cust_row['name'] . "</option>";
                                     }
                                     ?>
                                 </select>
@@ -70,8 +89,8 @@ $currencySymbol = $row['currency_symbol'] ?? '$';
                             <div class="form-group">
                                 <label>Sale Date</label>
                                 <div class="input-groupicon">
-                                    <input type="text" placeholder="Choose Date" class="datetimepicker"
-                                        name="order_date" required>
+                                <input type="text" class="datetimepicker" name="order_date" 
+                                    value="<?php echo isset($row['order_date']) ? htmlspecialchars($row['order_date']) : ''; ?>" required>
                                     <a class="addonset">
                                         <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg" alt="img">
                                     </a>
@@ -114,10 +133,10 @@ $currencySymbol = $row['currency_symbol'] ?? '$';
                                 <label>Order Tax</label>
                                 <select class="select" name="tax_id" required>
                                     <option value="">Choose Tax</option>
-                                    <?php while ($row = mysqli_fetch_assoc($tax_result)) { ?>
-                                    <option value="<?php echo $row['id']; ?>"
-                                        <?php echo ($row['id'] == $tax_id) ? 'selected' : ''; ?>>
-                                        <?php echo $row['tax_name'] . " (" . $row['tax_rate'] . ")"; ?>
+                                    <?php while ($tax_row = mysqli_fetch_assoc($tax_result)) { ?>
+                                    <option value="<?php echo $tax_row['id']; ?>"
+                                        <?php echo ($tax_row['id'] == $tax_id) ? 'selected' : ''; ?>>
+                                        <?php echo $tax_row['tax_name'] . " (" . $tax_row['tax_rate'] . ")"; ?>
                                     </option>
                                     <?php } ?>
                                 </select>
@@ -128,7 +147,8 @@ $currencySymbol = $row['currency_symbol'] ?? '$';
                                 <label>Discount</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><?php echo $currencySymbol; ?></span>
-                                    <input type="text" name="discount" class="form-control" required>
+                                    <input type="text" name="discount" class="form-control" 
+                                        value="<?php echo htmlspecialchars($discount); ?>" required>
                                 </div>
                             </div>
                         </div>
@@ -137,7 +157,8 @@ $currencySymbol = $row['currency_symbol'] ?? '$';
                                 <label>Shipping</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><?php echo $currencySymbol; ?></span>
-                                    <input type="text" name="shipping" class="form-control" required>
+                                    <input type="text" name="shipping" class="form-control" 
+                                        value="<?php echo htmlspecialchars($shipping); ?>" required>
                                 </div>
                             </div>
                         </div>
@@ -146,8 +167,8 @@ $currencySymbol = $row['currency_symbol'] ?? '$';
                                 <label>Status</label>
                                 <select class="select" name="status" required>
                                     <option>Choose Status</option>
-                                    <option>Completed</option>
-                                    <option>Inprogress</option>
+                                    <option value="Completed" <?php echo ($status == 'Completed') ? 'selected' : ''; ?>>Completed</option>
+                                    <option value="Inprogress" <?php echo ($status == 'Inprogress') ? 'selected' : ''; ?>>Inprogress</option>
                                 </select>
                             </div>
                         </div>
@@ -156,15 +177,17 @@ $currencySymbol = $row['currency_symbol'] ?? '$';
                                 <label>Paid Payment</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><?php echo $currencySymbol; ?></span>
-                                    <input type="text" name="paid-payment" required>
-                                    <select class="select form-control" name="payment-type" style="width:150px;">
-                                        <?php while ($row = mysqli_fetch_assoc($pay_result)) { ?>
-                                        <option value="<?php echo $row['id']; ?>"
-                                            <?php echo ($row['id'] == $pay_id) ? 'selected' : ''; ?>>
-                                            <?php echo $row['payment_name']; ?>
-                                        </option>
-                                        <?php } ?>
-                                    </select>
+                                    <input type="text" name="paid-payment" 
+                                        value="<?php echo htmlspecialchars($paid_payment); ?>" required>
+                                        <select class="select form-control" name="payment-type" style="width:150px;">
+                                            <option value="">Choose Payment Type</option>
+                                            <?php while ($row = mysqli_fetch_assoc($pay_result)) { ?>
+                                            <option value="<?php echo $row['id']; ?>" 
+                                                <?php echo ($row['id'] == $payment_type) ? 'selected' : ''; ?>>
+                                                <?php echo $row['payment_name']; ?>
+                                            </option>
+                                            <?php } ?>
+                                        </select>
                                 </div>
                             </div>
                         </div>
@@ -209,5 +232,12 @@ $currencySymbol = $row['currency_symbol'] ?? '$';
 </div>
 <script>
 var siteUrl = "<?php echo SITE_URL; ?>";
+$(document).ready(function () {
+    $('.datetimepicker').datepicker({
+        format: 'dd-mm-yyyy',  // Set format to match database
+        autoclose: true,
+        todayHighlight: true
+    });
+});
 </script>
 <?php include('../../include/footer.php'); ?>

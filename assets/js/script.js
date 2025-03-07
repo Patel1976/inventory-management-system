@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded",function(){let e=window.location.pa
 function previewImage(input, previewId) {var file = input.files[0];if (file) {var reader = new FileReader();reader.onload = function (e) {document.getElementById(previewId).src = e.target.result;};reader.readAsDataURL(file);}}
 
 function fill(productName, price, currencySymbol) {
-    // console.log("Selected Product:", productName, price, currencySymbol);
+    // console.log("Selected Product!!!:", productName, price, currencySymbol);
     // Set the selected product name in the input field
     $('#search').val(productName);
     // Hide the dropdown list
@@ -131,36 +131,10 @@ $(document).ready(function() {
     $("#search").on("focus", function() {
         $(this).val($(this).val());
     });
-    function updateTotals() {
-        var subtotal = 0;
-        
-        // Calculate total subtotal from all products
-        $("#productTable tbody tr").each(function () {
-            subtotal += parseFloat($(this).find(".subtotal").text()) || 0;
-        });
-
-        // Get Discount, Shipping, and Order Tax
-        var discount = parseFloat($("input[name='discount']").val()) || 0;
-        var shipping = parseFloat($("input[name='shipping']").val()) || 0;
-        var taxRate = parseFloat($("select[name='tax_id'] option:selected").text().match(/\d+(\.\d+)?/)) || 0;
-
-        // Calculate Order Tax
-        var orderTax = (subtotal * taxRate) / 100;
-
-        // Calculate Grand Total
-        var grandTotal = subtotal + orderTax + shipping - discount;
-
-        // Update UI
-        $("#orderTax").text(`${orderTax.toFixed(2)} (${taxRate}%)`);
-        $("#discountAmount").text(`${discount.toFixed(2)}`);
-        $("#shippingAmount").text(`${shipping.toFixed(2)}`);
-        $("#grandTotal").text(`${grandTotal.toFixed(2)}`);
-    }
-
+    
     // Event listener for input changes
     $(document).on("input", "input[name='discount'], input[name='shipping']", updateTotals);
     $(document).on("change", "select[name='tax_id']", updateTotals);
-    
     // Event listener for updating subtotal when quantity changes
     $(document).on("input", ".qty", function () {
         var row = $(this).closest("tr");
@@ -177,16 +151,17 @@ $(document).ready(function() {
         updateTotals();
     });
 });
-// Function to add selected product to the table
+  
 function addProductToTable(productName, price, currencySymbol) {
+    console.log("Function called with!:", productName, price, currencySymbol); // Debugging
     var rowCount = $("#productTable tbody tr").length + 1;
     var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
     var newRow = `
         <tr>
             <td>${rowCount}</td>
-            <td>${productName}</td>
+            <td><span class="productname">${productName}</span></td> 
             <td>${currencySymbol} <span class="price">${price}</span></td>
-            <td><input type="number" class="form-control qty" style="width:100px;" value="1" min="1"></td>
+            <td><input type="number" name="sale-qty" class="form-control qty" style="width:100px;" value="1" min="1"></td>
             <td>${currencySymbol} <span class="subtotal">${price}</span></td>
             <td>
                 <a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a>
@@ -196,6 +171,29 @@ function addProductToTable(productName, price, currencySymbol) {
     $("#productTable tbody").append(newRow);
     updateTotals();
 }
+
+function updateTotals() {
+    var subtotal = 0;
+    // Calculate total subtotal from all products
+    $("#productTable tbody tr").each(function () {
+        subtotal += parseFloat($(this).find(".subtotal").text()) || 0;
+    });
+    // Get Discount, Shipping, and Order Tax
+    var discount = parseFloat($("input[name='discount']").val()) || 0;
+    var shipping = parseFloat($("input[name='shipping']").val()) || 0;
+    var taxRate = parseFloat($("select[name='tax_id'] option:selected").text().match(/\d+(\.\d+)?/)) || 0;
+    // Calculate Order Tax
+    var orderTax = (subtotal * taxRate) / 100;
+    // Calculate Grand Total
+    var grandTotal = subtotal + orderTax + shipping - discount;
+    // Update UI
+    $("#orderTax").text(`${orderTax.toFixed(2)} (${taxRate}%)`);
+    $("#discountAmount").text(`${discount.toFixed(2)}`);
+    $("#shippingAmount").text(`${shipping.toFixed(2)}`);
+    $("#grandTotal").text(`${grandTotal.toFixed(2)}`);
+    $("#total_amount").text(`${grandTotal.toFixed(2)}`);
+}
+
 // Event listener for updating subtotal when quantity changes
 $(document).on("input", ".qty", function () {
     var row = $(this).closest("tr");
@@ -205,20 +203,26 @@ $(document).on("input", ".qty", function () {
     row.find(".subtotal").text(subtotal.toFixed(2));
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    function calculateTotalAmount() {
-        let totalAmount = 0;
-
-        document.querySelectorAll(".subtotal").forEach(function (element) {
-            let subtotalText = element.textContent.replace(/[^\d.]/g, ''); // Remove non-numeric characters
-            let subtotalValue = parseFloat(subtotalText) || 0;
-            totalAmount += subtotalValue;
+$(document).ready(function () {
+    $("#saleForm").submit(function (event) {
+        // Ensure total_amount is updated before submission
+        var grandTotal = $("#grandTotal").text().trim(); // Assuming #grandTotal holds the total amount
+        $("#total_amount").val(grandTotal); // Set value to hidden input field
+        // Serialize table data into JSON
+        var saleItems = [];
+        $("#productTable tbody tr").each(function () {
+            var productName = $(this).find(".productname").text().trim();
+            var price = parseFloat($(this).find(".price").text()) || 0;
+            var qty = parseInt($(this).find(".qty").val()) || 1;
+            var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
+            saleItems.push({
+                product: productName,
+                price: price,
+                qty: qty,
+                subtotal: subtotal
+            });
         });
-
-        // Update the hidden input field value
-        document.getElementById("total_amount").value = totalAmount.toFixed(2);
-    }
-
-    // Run calculation when the page loads
-    calculateTotalAmount();
+        // Store JSON data in hidden input
+        $("#sale_item_data").val(JSON.stringify(saleItems));
+    });
 });
