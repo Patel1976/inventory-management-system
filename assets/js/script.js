@@ -150,26 +150,55 @@ $(document).ready(function() {
         $(this).closest("tr").remove();
         updateTotals();
     });
+    // Check if sale data exists (this should be set from PHP)
+    if (typeof saleData !== "undefined") {
+        // Populate discount, shipping, and tax values
+        $("input[name='discount']").val(saleData.discount);
+        $("input[name='shipping']").val(saleData.shipping);
+        $("select[name='tax_id']").val(saleData.tax_id);
+        // Populate sale items in the table
+        saleData.items.forEach(item => {
+            addProductToTable(item.product_name, item.price, saleData.currencySymbol);
+            // Update the quantity field after adding the row
+            let lastRow = $("#productTable tbody tr:last-child");
+            lastRow.find(".qty").val(item.qty);
+            // Update the subtotal based on quantity
+            let subtotal = parseFloat(item.price) * parseInt(item.qty);
+            lastRow.find(".subtotal").text(subtotal.toFixed(2));
+        });
+        // Update totals after populating
+        updateTotals();
+    }
 });
   
 function addProductToTable(productName, price, currencySymbol) {
-    console.log("Function called with!:", productName, price, currencySymbol); // Debugging
-    var rowCount = $("#productTable tbody tr").length + 1;
-    var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
-    var newRow = `
-        <tr>
-            <td>${rowCount}</td>
-            <td><span class="productname">${productName}</span></td> 
-            <td>${currencySymbol} <span class="price">${price}</span></td>
-            <td><input type="number" name="sale-qty" class="form-control qty" style="width:100px;" value="1" min="1"></td>
-            <td>${currencySymbol} <span class="subtotal">${price}</span></td>
-            <td>
-                <a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a>
-            </td>
-        </tr>
-    `;
-    $("#productTable tbody").append(newRow);
-    updateTotals();
+    let exists = false;
+    $("#productTable tbody tr").each(function() {
+        if ($(this).find(".productname").text().trim() === productName) {
+            exists = true;
+            return false; // Break the loop
+        }
+    });
+
+    if (!exists) {
+        console.log("Adding Product:", productName, price, currencySymbol);
+        var rowCount = $("#productTable tbody tr").length + 1;
+        var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
+        var newRow = `
+            <tr>
+                <td>${rowCount}</td>
+                <td><span class="productname">${productName}</span></td> 
+                <td>${currencySymbol} <span class="price">${price}</span></td>
+                <td><input type="number" name="sale-qty" class="form-control qty" style="width:100px;" value="1" min="1"></td>
+                <td>${currencySymbol} <span class="subtotal">${price}</span></td>
+                <td>
+                    <a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a>
+                </td>
+            </tr>
+        `;
+        $("#productTable tbody").append(newRow);
+        updateTotals();
+    }
 }
 
 function updateTotals() {
@@ -223,6 +252,6 @@ $(document).ready(function () {
             });
         });
         // Store JSON data in hidden input
-        $("#sale_item_data").val(JSON.stringify(saleItems));
+        $("#product_data").val(JSON.stringify(saleItems));
     });
 });

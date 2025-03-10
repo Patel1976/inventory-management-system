@@ -1,4 +1,57 @@
-﻿<?php include('../../include/header.php'); ?>
+﻿<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+
+// Get sale_id from URL
+$sale_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+// Fetch sale details from `sales` table
+$sale_query = "SELECT * FROM sales WHERE id = $sale_id";
+$sale_result = mysqli_query($conn, $sale_query);
+$sale = mysqli_fetch_assoc($sale_result);
+// Fetch sale items from `sale_items` table
+$items_query = "SELECT * FROM sale_items WHERE sale_id = $sale_id";
+$items_result = mysqli_query($conn, $items_query);
+// Store sale items in an array
+$sale_items = [];
+$product_names = [];
+$subtotal = 0;
+while ($row = mysqli_fetch_assoc($items_result)) {
+    $sale_items[] = $row;
+    $subtotal += $row['subtotal']; // Calculate subtotal
+    $product_names[] = $row['product_name'];
+}
+// Fetch Customer Deails
+$cust_id = $sale['customer_id'];
+$cust_query = "SELECT * FROM customers WHERE id = $cust_id";
+$cust_result = mysqli_query($conn, $cust_query);
+$customer = mysqli_fetch_assoc($cust_result);
+// Fetch Tax Value
+$tax_id = $sale['order_tax_id'];
+$tax_query = "SELECT * FROM tax_rates WHERE id = $tax_id";
+$tax_result = mysqli_query($conn, $tax_query);
+$tax = mysqli_fetch_assoc($tax_result);
+$tax_rate = isset($tax['tax_rate']) ? floatval($tax['tax_rate']) : 0;
+$tax_price = ($subtotal * $tax_rate) / 100;
+// Fetch active currency symbol from the database
+$curr_query = "SELECT currency_symbol FROM currencies WHERE status = 'Active' LIMIT 1";
+$curr_result = mysqli_query($conn, $curr_query);
+$curr_row = mysqli_fetch_assoc($curr_result);
+$currencySymbol = $curr_row['currency_symbol'] ?? '$';
+// // Fetch Product Image
+// $product_images = [];
+// foreach ($product_names as $product_name) {
+//     $product_name_safe = mysqli_real_escape_string($conn, $product_name);
+//     $product_query = "SELECT image FROM products WHERE name = '$product_name_safe'";
+//     $product_result = mysqli_query($conn, $product_query);
+
+//     if ($product_result) {
+//         $product_image = mysqli_fetch_assoc($product_result);
+//         $image_name = $product_image['image'] ?? 'default.jpg'; // Handle missing images
+//         $product_images[$product_name] = SITE_URL . "uploads/products/" . $image_name;
+//     }
+// }
+// echo "<script>console.log(" . json_encode($cust_result['name']) . ");</script>";
+?>
 
 <div class="page-wrapper">
     <div class="content">
@@ -9,271 +62,64 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-body">
-                <div class="card-sales-split">
-                    <h2>Sale Detail : SL0101</h2>
-                    <ul>
-                        <li>
-                            <a href="javascript:void(0);"><img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg"
-                                    alt="img"></a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);"><img src="<?php echo SITE_URL; ?>assets/img/icons/pdf.svg"
-                                    alt="img"></a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);"><img src="<?php echo SITE_URL; ?>assets/img/icons/excel.svg"
-                                    alt="img"></a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);"><img src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg"
-                                    alt="img"></a>
-                        </li>
-                    </ul>
+            <div class="card-body p-0">
+                <div class="card-sales-split p-4 wordset">
+                    <h4>Sale Detail : <?php echo $sale['invoice_number'];?></h4>
                 </div>
-                <div class="invoice-box table-height"
-                    style="max-width: 1600px;width:100%;overflow: auto;margin:15px auto;padding: 0;font-size: 14px;line-height: 24px;color: #555;">
-                    <table cellpadding="0" cellspacing="0" style="width: 100%;line-height: inherit;text-align: left;">
-                        <tbody>
-                            <tr class="top">
-                                <td colspan="6" style="padding: 5px;vertical-align: top;">
-                                    <table style="width: 100%;line-height: inherit;text-align: left;">
-                                        <tbody>
-                                            <tr>
-                                                <td
-                                                    style="padding:5px;vertical-align:top;text-align:left;padding-bottom:20px">
-                                                    <font style="vertical-align: inherit;margin-bottom:25px;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size:14px;color:#7367F0;font-weight:600;line-height: 35px; ">
-                                                            Customer Info</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            walk-in-customer</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                                data-cfemail="3a4d5b565117535417594f494e55575f487a5f425b574a565f14595557">[email&#160;protected]</a>
-                                                        </font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            123456780</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            N45 , Dhaka</font>
-                                                    </font><br>
-                                                </td>
-                                                <td
-                                                    style="padding:5px;vertical-align:top;text-align:left;padding-bottom:20px">
-                                                    <font style="vertical-align: inherit;margin-bottom:25px;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size:14px;color:#7367F0;font-weight:600;line-height: 35px; ">
-                                                            Company Info</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            DGT </font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            <a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                                                data-cfemail="9ffefbf2f6f1dffae7fef2eff3fab1fcf0f2">[email&#160;protected]</a>
-                                                        </font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            6315996770</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            3618 Abia Martin Drive</font>
-                                                    </font><br>
-                                                </td>
-                                                <td
-                                                    style="padding:5px;vertical-align:top;text-align:left;padding-bottom:20px">
-                                                    <font style="vertical-align: inherit;margin-bottom:25px;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size:14px;color:#7367F0;font-weight:600;line-height: 35px; ">
-                                                            Invoice Info</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            Reference </font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            Payment Status</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            Status</font>
-                                                    </font><br>
-                                                </td>
-                                                <td
-                                                    style="padding:5px;vertical-align:top;text-align:right;padding-bottom:20px">
-                                                    <font style="vertical-align: inherit;margin-bottom:25px;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size:14px;color:#7367F0;font-weight:600;line-height: 35px; ">
-                                                            &nbsp;</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#000;font-weight: 400;">
-                                                            SL0101 </font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#2E7D32;font-weight: 400;">
-                                                            Paid</font>
-                                                    </font><br>
-                                                    <font style="vertical-align: inherit;">
-                                                        <font
-                                                            style="vertical-align: inherit;font-size: 14px;color:#2E7D32;font-weight: 400;">
-                                                            Completed</font>
-                                                    </font><br>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr class="heading " style="background: #F3F2F7;">
-                                <td
-                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                    Product Name
-                                </td>
-                                <td
-                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                    QTY
-                                </td>
-                                <td
-                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                    Price
-                                </td>
-                                <td
-                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                    Discount
-                                </td>
-                                <td
-                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                    TAX
-                                </td>
-                                <td
-                                    style="padding: 5px;vertical-align: middle;font-weight: 600;color: #5E5873;font-size: 14px;padding: 10px; ">
-                                    Subtotal
-                                </td>
-                            </tr>
-                            <tr class="details" style="border-bottom:1px solid #E9ECEF ;">
-                                <td style="padding: 10px;vertical-align: top; display: flex;align-items: center;">
-                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product1.jpg" alt="img"
-                                        class="me-2" style="width:40px;height:40px;">
-                                    Macbook pro
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    1.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    1500.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    0.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    0.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    1500.00
-                                </td>
-                            </tr>
-                            <tr class="details" style="border-bottom:1px solid #E9ECEF ;">
-                                <td style="padding: 10px;vertical-align: top; display: flex;align-items: center;">
-                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product7.jpg" alt="img"
-                                        class="me-2" style="width:40px;height:40px;">
-                                    Apple Earpods
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    1.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    2000.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    0.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    0.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    1500.00
-                                </td>
-                            </tr>
-                            <tr class="details" style="border-bottom:1px solid #E9ECEF ;">
-                                <td style="padding: 10px;vertical-align: top; display: flex;align-items: center;">
-                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product8.jpg" alt="img"
-                                        class="me-2" style="width:40px;height:40px;">
-                                    samsung
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    1.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    8000.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    0.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    0.00
-                                </td>
-                                <td style="padding: 10px;vertical-align: top; ">
-                                    1500.00
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row">
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Order Tax</label>
-                            <input type="text">
+                <div class="invoice-box table-height p-3">
+                    <div class="row sales-details-items d-flex mb-3">
+                        <div class="col-md-5 details-item">
+                            <h6>Customer Info</h6>
+                            <h4 class="mb-1"><?php echo $customer['name'];?></h4>
+                            <p class="mb-0"><?php echo $customer['address'] . ", " . $customer['city'] . ", " . $customer['country']; ?></p>
+                            <p class="mb-0">Email: <span><?php echo $customer['email'];?></span></p>
+                            <p class="mb-0">Phone: <span><?php echo $customer['phone'];?></span></p>
+                        </div>
+                        <div class="col-md-5 details-item">
+                            <h6>Invoice Info</h6>
+                            <p class="mb-0">Invoice Number: <span style="color: #1890ff;"><?php echo $sale['invoice_number'];?></span></p>
+                            <p class="mb-0">Order Date: <span style="color: #212B36;"><?php echo $sale['order_date'];?></span></p>
+                            <p class="mb-0">Status: <span class="<?php echo ($sale['status'] == 'Completed') ? 'text-green' : 'text-red'; ?>"><?php echo $sale['status']; ?></span></p>
+                            <p class="mb-0">Payment Status: <span class="<?php echo ($sale['paid_amount'] >= $sale['total_amount']) ? 'text-green' : 'text-red'; ?>">
+                                                                <?php echo ($sale['paid_amount'] >= $sale['total_amount']) ? 'Paid' : 'Unpaid'; ?>
+                                                            </span>
+                            </p>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Discount</label>
-                            <input type="text">
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Shipping</label>
-                            <input type="text">
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select class="select">
-                                <option>Choose Status</option>
-                                <option>Completed</option>
-                                <option>Inprogress</option>
-                            </select>
-                        </div>
+                    <h5 class="order-text">Order Summary</h5>
+                    <div class="sale-item-box table-responsive mb-3">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 400px;">Product Name</th>
+                                    <th>Price</th>
+                                    <th style="width: 200px;">Quantity</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($sale_items as $sale_item) { 
+                                    $product_name_safe = mysqli_real_escape_string($conn, $sale_item['product_name']);
+                                    $product_query = "SELECT image FROM products WHERE name = '$product_name_safe'";
+                                    $product_result = mysqli_query($conn, $product_query);
+                                    $product_image = mysqli_fetch_assoc($product_result);
+                                    // Set image path
+                                    $image_name = $product_image['image'] ?? 'default.jpg'; // Default image if not found
+                                    $image_path = SITE_URL . "uploads/products/" . $image_name;
+                                    ?>
+                                    <tr class="details">
+                                        <td>
+                                            <img src="<?php echo $image_path; ?>" alt="img"
+                                                class="me-2" style="width:40px;height:auto;">
+                                                <?php echo $sale_item['product_name'];?>
+                                        </td>
+                                        <td><?php echo $currencySymbol . "" . $sale_item['price'];?></td>
+                                        <td><?php echo $sale_item['qty'];?></td>
+                                        <td><?php echo $currencySymbol . "" . $sale_item['subtotal'];?></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="row">
                         <div class="col-lg-6 ">
@@ -281,11 +127,15 @@
                                 <ul>
                                     <li>
                                         <h4>Order Tax</h4>
-                                        <h5>$ 0.00 (0.00%)</h5>
+                                        <h5><?php echo $currencySymbol . "" . $tax_price . " (" . $tax['tax_rate'] . ")";?></h5>
                                     </li>
                                     <li>
                                         <h4>Discount </h4>
-                                        <h5>$ 0.00</h5>
+                                        <h5><?php echo $currencySymbol . "" . $sale['discount'];?></h5>
+                                    </li>
+                                    <li>
+                                        <h4>Paid </h4>
+                                        <h5><?php echo $currencySymbol . "" . $sale['paid_amount'];?></h5>
                                     </li>
                                 </ul>
                             </div>
@@ -295,19 +145,19 @@
                                 <ul>
                                     <li>
                                         <h4>Shipping</h4>
-                                        <h5>$ 0.00</h5>
+                                        <h5><?php echo $currencySymbol . "" . $sale['shipping'];?></h5>
                                     </li>
                                     <li class="total">
                                         <h4>Grand Total</h4>
-                                        <h5>$ 0.00</h5>
+                                        <h5><?php echo $currencySymbol . "" . $sale['total_amount'];?></h5>
+                                    </li>
+                                    <li class="total">
+                                        <h4>Due</h4>
+                                        <h5><?php echo $currencySymbol . "" . ($sale['total_amount'] - $sale['paid_amount']);?></h5>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <a href="javascript:void(0);" class="btn btn-submit me-2">Update</a>
-                        <a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
                     </div>
                 </div>
             </div>

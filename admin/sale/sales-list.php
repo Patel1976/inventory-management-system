@@ -1,6 +1,24 @@
 <?php include('../../login_check.php');
 include('../../include/header.php');
 include('../../db_connection.php');
+
+// Delete Sale Data
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']); // Sanitize input
+
+    // Delete related items from sale_items first
+    $delete_items_query = "DELETE FROM sale_items WHERE sale_id = $delete_id";
+    mysqli_query($conn, $delete_items_query);
+
+    // Delete sale record from sales table
+    $delete_sale_query = "DELETE FROM sales WHERE id = $delete_id";
+    if (mysqli_query($conn, $delete_sale_query)) {
+        echo "<script>window.location.href='sales-list.php?msg=deleted';</script>";
+        exit();
+    } else {
+        echo "Error deleting sale: " . mysqli_error($conn);
+    }
+}
 // Fetch sales data
 $query = "SELECT s.id, s.invoice_number, c.name AS customer_name, s.order_date, s.order_tax_id, s.discount, 
                  s.shipping, s.total_amount, s.paid_amount, s.payment_type, s.status, s.updated_at 
@@ -22,7 +40,17 @@ $result = mysqli_query($conn, $query);
                         src="<?php echo SITE_URL; ?>assets/img/icons/plus.svg" alt="img" class="me-1">Add Sales</a>
             </div>
         </div>
-
+        <?php 
+            if (isset($_GET['msg'])) {
+                if ($_GET['msg'] == 'deleted') {
+                    echo "<div class='alert alert-danger'>Sale deleted successfully!</div>";
+                } elseif ($_GET['msg'] == 'success') {
+                    echo "<div class='alert alert-success'>Sale added successfully!</div>";
+                } elseif ($_GET['msg'] == 'updated') {
+                    echo "<div class='alert alert-success'>Sale updated successfully!</div>";
+                }
+            }
+        ?>
         <div class="card">
             <div class="card-body">
                 <div class="table-top">
@@ -112,7 +140,7 @@ $result = mysqli_query($conn, $query);
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="delete-sales.php?delete_id=<?php echo $row['id']; ?>" class="dropdown-item confirm-text">
+                                                <a href="sales-list.php?delete_id=<?php echo $row['id']; ?>" class="dropdown-item confirm-text">
                                                     <img src="<?php echo SITE_URL; ?>assets/img/icons/delete1.svg" class="me-2" alt="img">Delete Sale
                                                 </a>
                                             </li>

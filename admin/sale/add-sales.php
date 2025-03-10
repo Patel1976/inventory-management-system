@@ -2,7 +2,19 @@
 include('../../include/header.php');
 include('../../db_connection.php');
 
+// Fetch active currency symbol from the database
+$curr_query = "SELECT currency_symbol FROM currencies WHERE status = 'Active' LIMIT 1";
+$curr_result = mysqli_query($conn, $curr_query);
+$curr_row = mysqli_fetch_assoc($curr_result);
+$currencySymbol = $curr_row['currency_symbol'] ?? '$';
+
 $sale_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$discount = 0;
+$shipping = 0;
+$paid_payment = 0;
+$payment_type = 0;
+$status = 0;
+$tax_id = null;
 if ($sale_id > 0) {
     $sale_query = "SELECT * FROM sales WHERE id = $sale_id";
     $sale_result = mysqli_query($conn, $sale_query);
@@ -16,6 +28,27 @@ if ($sale_id > 0) {
         $payment_type = isset($row['payment_type']) ? $row['payment_type'] : '';
     }
 }
+$saleData = [
+    "discount" => $discount,
+    "shipping" => $shipping,
+    "tax_id" => $tax_id,
+    "currencySymbol" => $currencySymbol,
+    "items" => []
+];
+
+// Fetch sale items from database
+$saleItemsQuery = "SELECT * FROM sale_items WHERE sale_id = $sale_id";
+$saleItemsResult = mysqli_query($conn, $saleItemsQuery);
+while ($item = mysqli_fetch_assoc($saleItemsResult)) {
+    $saleData["items"][] = [
+        "product_name" => $item["product_name"],
+        "price" => $item["price"],
+        "qty" => $item["qty"]
+    ];
+}
+
+// Pass sale data to JavaScript
+echo "<script>var saleData = " . json_encode($saleData) . ";</script>";
 // Get the latest invoice number from the database
 if ($sale_id == 0) {
     $inv_query = "SELECT invoice_number FROM sales ORDER BY id DESC LIMIT 1";
@@ -44,11 +77,6 @@ $tax_result = mysqli_query($conn, $tax_query);
 // Fetch payment type
 $pay_query = "SELECT id, payment_name FROM payment_types WHERE status = 'Active'";
 $pay_result = mysqli_query($conn, $pay_query);
-// Fetch active currency symbol from the database
-$curr_query = "SELECT currency_symbol FROM currencies WHERE status = 'Active' LIMIT 1";
-$curr_result = mysqli_query($conn, $curr_query);
-$curr_row = mysqli_fetch_assoc($curr_result);
-$currencySymbol = $curr_row['currency_symbol'] ?? '$';
 ?>
 <div class="page-wrapper">
     <div class="content">
@@ -57,8 +85,8 @@ $currencySymbol = $curr_row['currency_symbol'] ?? '$';
         <input type="hidden" name="sale_item_data" id="sale_item_data">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Add Sale</h4>
-                    <h6>Add your new sale</h6>
+                    <h4><?php echo $sale_id ? 'Update Sale' : 'Add Sale'; ?></h4>
+                    <h6><?php echo $sale_id ? 'Update Selected Sale' : 'Add your new sale'; ?></h6>
                 </div>
             </div>
             <div class="card">
@@ -101,7 +129,7 @@ $currencySymbol = $curr_row['currency_symbol'] ?? '$';
                             <div class="form-group">
                                 <label>Product Name</label>
                                 <div class="input-groupicon">
-                                    <input type="text" id="search" placeholder="Please type product code and select..." required>
+                                    <input type="text" id="search" placeholder="Please type product code and select...">
                                     <div id="display"></div>
                                 </div>
                             </div>
@@ -121,7 +149,19 @@ $currencySymbol = $curr_row['currency_symbol'] ?? '$';
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    <?php $count = 1; ?>
+                                    <?php foreach ($saleData["items"] as $item) { ?>
+                                        <tr>
+                                            <td><?php echo $count++; ?></td>
+                                            <td><span class="productname"><?php echo htmlspecialchars($item['product_name']); ?></span></td>
+                                            <td><?php echo $currencySymbol; ?> <span class="price"><?php echo $item['price']; ?></span></td>
+                                            <td><input type="number" name="sale-qty[]" class="form-control qty" style="width:100px;" value="<?php echo $item['qty']; ?>" min="1"></td>
+                                            <td><?php echo $currencySymbol; ?> <span class="subtotal"><?php echo $item['price'] * $item['qty']; ?></span></td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="delete-set"><img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="Delete"></a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -180,7 +220,7 @@ $currencySymbol = $curr_row['currency_symbol'] ?? '$';
                                     <input type="text" name="paid-payment" 
                                         value="<?php echo htmlspecialchars($paid_payment); ?>" required>
                                         <select class="select form-control" name="payment-type" style="width:150px;">
-                                            <option value="">Choose Payment Type</option>
+                                            <!-- <option value="">Choose Payment Type</option> -->
                                             <?php while ($row = mysqli_fetch_assoc($pay_result)) { ?>
                                             <option value="<?php echo $row['id']; ?>" 
                                                 <?php echo ($row['id'] == $payment_type) ? 'selected' : ''; ?>>
@@ -220,7 +260,8 @@ $currencySymbol = $curr_row['currency_symbol'] ?? '$';
                             </div>
                         </div>
                         <div class="col-lg-12">
-                            <input type="submit" class="btn btn-submit me-2" name="add_sale" value="Submit">
+                            <input type="submit" class="btn btn-submit me-2" name="<?php echo !empty($sale_id) ? 'update_sale' : 'add_sale'; ?>" value="<?php echo !empty($sale_id) ? 'Update' : 'Submit'; ?>">
+                            <input type="hidden" name="sale_id" value="<?php echo $sale_id; ?>">
                             <a href="sales-list.php" class="btn btn-cancel">Cancel</a>
                         </div>
                     </div>
