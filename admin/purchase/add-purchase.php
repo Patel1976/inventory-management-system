@@ -16,18 +16,37 @@ $payment_type = 0;
 $status = 0;
 $tax_id = null;
 if ($purchase_id > 0) {
-    $purchase_query = "SELECT * FROM purchase WHERE id = $purchase_id";
+    $purchase_query = "SELECT * FROM purchases WHERE id = $purchase_id";
     $purchase_result = mysqli_query($conn, $purchase_query);
     if ($purchase_result && mysqli_num_rows($purchase_result) > 0) {
         $row = mysqli_fetch_assoc($purchase_result);
         $discount = isset($row['pdiscount']) ? $row['pdiscount'] : '';
         $shipping = isset($row['pshipping']) ? $row['pshipping'] : '';
-        $paid_payment = isset($row['ppaid_amount']) ? $row['ppaid_amount'] : '';
+        $paid_payment = isset($row['ppaid_payment']) ? $row['ppaid_payment'] : '';
         $status = isset($row['status']) ? $row['status'] : '';
         $tax_id = isset($row['ptax_id']) ? $row['ptax_id'] : '';
         $payment_type = isset($row['ppayment_type']) ? $row['ppayment_type'] : '';
     }
 }
+$purchaseData = [
+    "discount" => $discount,
+    "shipping" => $shipping,
+    "tax_id" => $tax_id,
+    "currencySymbol" => $currencySymbol,
+    "items" => []
+];
+// Fetch purchase items from database
+$purchaseItemsQuery = "SELECT * FROM purchase_items WHERE purchase_id = $purchase_id";
+$purchaseItemsResult = mysqli_query($conn, $purchaseItemsQuery);
+while ($item = mysqli_fetch_assoc($purchaseItemsResult)) {
+    $purchaseData["items"][] = [
+        "product_name" => $item["product_name"],
+        "price" => $item["p_price"],
+        "qty" => $item["p_qty"]
+    ];
+}
+// Pass purchase data to JavaScript
+echo "<script>var purchaseData = " . json_encode($purchaseData) . ";</script>";
 // Get the latest invoice number from the database
 if ($purchase_id == 0) {
     $inv_query = "SELECT purchase_invoice FROM purchases ORDER BY id DESC LIMIT 1";
@@ -61,7 +80,7 @@ $pay_result = mysqli_query($conn, $pay_query);
     <div class="content">
         <form action="../../include/purchase_crud.php" method="POST" enctype="multipart/form-data" id="purchaseForm">
             <input type="hidden" name="total_amount" id="total_amount">
-            <input type="hidden" name="product_data" id="product_data">
+            <input type="hidden" name="purchase_item_data" id="purchase_item_data">
             <div class="page-header">
                 <div class="page-title">
                     <h4><?php echo $purchase_id ? 'Update Purchase' : 'Add Purchase'; ?></h4>
@@ -129,7 +148,19 @@ $pay_result = mysqli_query($conn, $pay_query);
                                     </tr>
                                 </thead>
                                 <tbody>
-
+                                    <?php $count = 1; ?>
+                                    <?php foreach ($purchaseData["items"] as $item) { ?>
+                                        <tr>
+                                            <td><?php echo $count++; ?></td>
+                                            <td><span class="productname"><?php echo htmlspecialchars($item['product_name']); ?></span></td>
+                                            <td><?php echo $currencySymbol; ?> <span class="price"><?php echo $item['price']; ?></span></td>
+                                            <td><input type="number" name="sale-qty[]" class="form-control qty" style="width:100px;" value="<?php echo $item['qty']; ?>" min="1"></td>
+                                            <td><?php echo $currencySymbol; ?> <span class="subtotal"><?php echo $item['price'] * $item['qty']; ?></span></td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="delete-set"><img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="Delete"></a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -233,8 +264,8 @@ $pay_result = mysqli_query($conn, $pay_query);
                             <input type="submit" class="btn btn-submit me-2"
                                 name="<?php echo !empty($purchase_id) ? 'update_purchase' : 'add_purchase'; ?>"
                                 value="<?php echo !empty($purchase_id) ? 'Update' : 'Submit'; ?>">
-                            <input type="hidden" name="sale_id" value="<?php echo $purchase_id; ?>">
-                            <a href="sales-list.php" class="btn btn-cancel">Cancel</a>
+                            <input type="hidden" name="purchase_id" value="<?php echo $purchase_id; ?>">
+                            <a href="purchase-list.php" class="btn btn-cancel">Cancel</a>
                         </div>
                     </div>
                 </div>

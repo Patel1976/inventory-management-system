@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_purchase'])) {
     $payment_type = mysqli_real_escape_string($conn, $_POST['payment-type']);
 
     // Decode purchase items JSON
-    $purchaseItems = json_decode($_POST['product_data'], true);
+    $purchaseItems = json_decode($_POST['purchase_item_data'], true);
     // Insert purchase record into `purchases` table
     $query = "INSERT INTO purchases (purchase_invoice, supplier_id, purchase_date, ptax_id, pdiscount, pshipping, ptotal_amount, ppaid_payment, ppayment_type, status) 
               VALUES ('$purchase_invoice', '$supplier_id', '$purchase_date', '$purchase_tax', '$discount', '$shipping', '$total_amount', '$paid_amount', '$payment_type', '$status')";
@@ -48,14 +48,14 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_purchase'])
     $purchase_invoice = mysqli_real_escape_string($conn, $_POST['purchase_invoice']);
     $supplier_id = intval($_POST['supplier']);
     $purchase_date = mysqli_real_escape_string($conn, $_POST['purchase_date']);
-    $purchase_tax = intval($_POST['ptax_id']);
+    $purchase_tax = intval($_POST['tax_id']);
     $discount = floatval($_POST['discount']);
     $shipping = floatval($_POST['shipping']);
     $status = mysqli_real_escape_string($conn, $_POST['status']);
     $paid_payment = floatval($_POST['paid-payment']);
     $payment_type = intval($_POST['payment-type']);
     $total_amount = floatval($_POST['total_amount']);
-    $purchaseItems = json_decode($_POST['product_data'], true);
+    $purchaseItems = json_decode($_POST['purchase_item_data'], true);
 
     // Update existing purchase
     $query = "UPDATE purchases SET 
@@ -66,7 +66,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_purchase'])
                 pdiscount = '$discount', 
                 pshipping = '$shipping', 
                 status = '$status', 
-                ppaid_amount = '$paid_payment', 
+                ppaid_payment = '$paid_payment', 
                 ppayment_type = '$payment_type',
                 ptotal_amount = '$total_amount'
                 WHERE id = $purchase_id";
@@ -100,7 +100,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_purchase'])
         }
 
         // Redirect to purchases list with success message
-        header("Location: ../admin/purchase/purchase-list.php?msg=success");
+        header("Location: ../admin/purchase/purchase-list.php?msg=updated");
         exit();
     } else {
         echo "Error updating purchase: " . mysqli_error($conn);

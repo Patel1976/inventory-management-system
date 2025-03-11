@@ -112,7 +112,7 @@ $result = mysqli_query($conn, $query);
                                     <td><?php echo date('d M Y', strtotime($row['purchase_date'])); ?></td>
                                     <td><?php echo htmlspecialchars($row['purchase_invoice']); ?></td>
                                     <td>
-                                        <span class="badges <?php echo ($row['status'] == 'Completed') ? 'bg-lightgreen' : 'bg-lightred'; ?>">
+                                        <span class="badges <?php echo ($row['status'] == 'Received') ? 'bg-lightgreen' : 'bg-lightred'; ?>">
                                             <?php echo htmlspecialchars($row['status']); ?>
                                         </span>
                                     </td>

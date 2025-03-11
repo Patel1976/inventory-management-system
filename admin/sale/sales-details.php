@@ -147,11 +147,11 @@ $currencySymbol = $curr_row['currency_symbol'] ?? '$';
                                         <h4>Shipping</h4>
                                         <h5><?php echo $currencySymbol . "" . $sale['shipping'];?></h5>
                                     </li>
-                                    <li class="total">
+                                    <li>
                                         <h4>Grand Total</h4>
                                         <h5><?php echo $currencySymbol . "" . $sale['total_amount'];?></h5>
                                     </li>
-                                    <li class="total">
+                                    <li>
                                         <h4>Due</h4>
                                         <h5><?php echo $currencySymbol . "" . ($sale['total_amount'] - $sale['paid_amount']);?></h5>
                                     </li>

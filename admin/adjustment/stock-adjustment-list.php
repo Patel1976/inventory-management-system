@@ -1,4 +1,22 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+
+// delete adjustment
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']); // Sanitize input
+    $delete_query = "DELETE FROM stock_adjustments WHERE id = '$delete_id'";
+
+    if (mysqli_query($conn, $delete_query)) {
+        echo "<script>window.location.href='stock-adjustment-list.php?msg=deleted';</script>";
+        exit();
+    } else {
+        echo "Error deleting adjustment: " . mysqli_error($conn);
+    }
+}
+$query = "SELECT * FROM stock_adjustments ORDER BY id DESC";
+$result = mysqli_query($conn, $query);
+?>
 
 <div class="page-wrapper">
     <div class="content">
@@ -9,10 +27,21 @@
             </div>
             <div class="page-btn">
                 <a href="add-stock-adjustment.php" class="btn btn-added"><img
-                        src="<?php echo SITE_URL; ?>assets/img/icons/plus.svg" alt="img" class="me-2">Add New Adjustment</a>
+                        src="<?php echo SITE_URL; ?>assets/img/icons/plus.svg" alt="img" class="me-2">Add New
+                    Adjustment</a>
             </div>
         </div>
-
+        <?php 
+            if (isset($_GET['msg'])) {
+                if ($_GET['msg'] == 'deleted') {
+                    echo "<div class='alert alert-danger'>Adjustment deleted successfully!</div>";
+                } elseif ($_GET['msg'] == 'success') {
+                    echo "<div class='alert alert-success'>Adjustment added successfully!</div>";
+                } elseif ($_GET['msg'] == 'updated') {
+                    echo "<div class='alert alert-success'>Adjustment updated successfully!</div>";
+                }
+            }
+        ?>
         <div class="card">
             <div class="card-body">
                 <div class="table-top">
@@ -53,64 +82,34 @@
                                 </th>
                                 <th>Product Name</th>
                                 <th>Quantity</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
                             <tr>
                                 <td>
                                     <label class="checkboxs">
-                                        <input type="checkbox">
+                                        <input type="checkbox" name="selected_ids[]" value="<?php echo $row['id']; ?>">
                                         <span class="checkmarks"></span>
                                     </label>
                                 </td>
-                                <td>Lenovo Light Laptop</td>
-                                <td>76</td>
+                                <td><?php echo htmlspecialchars($row['product_name']); ?></td>
+                                <td><strong><?php echo $row['ad_quantity']; ?></strong></td>
+                                <td><?php echo $row['status']; ?></td>
                                 <td>
-                                    <a class="me-3" href="edit-stock-adjustment.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
+                                    <a class="me-3" href="add-stock-adjustment.php?id=<?php echo $row['id']; ?>">
+                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="Edit">
                                     </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
+                                    <a class="me-3 confirm-text"
+                                        href="stock-adjustment-list.php?delete_id=<?php echo $row['id']; ?>"
+                                        onclick="return confirm('Are you sure you want to delete this adjustment?');">
+                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="Delete">
                                     </a>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>OPPO A74 5G</td>
-                                <td>69</td>
-                                <td>
-                                    <a class="me-3" href="edit-stock-adjustment.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>ASUS VivoBook 15</td>
-                                <td>40</td>
-                                <td>
-                                    <a class="me-3" href="edit-stock-adjustment.php">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/edit.svg" alt="img">
-                                    </a>
-                                    <a class="me-3 confirm-text" href="javascript:void(0);">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="img">
-                                    </a>
-                                </td>
-                            </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

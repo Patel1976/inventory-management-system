@@ -100,7 +100,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_sale'])) {
         }
 
         // Redirect to sales list with success message
-        header("Location: ../admin/sale/sales-list.php?msg=success");
+        header("Location: ../admin/sale/sales-list.php?msg=updated");
         exit();
     } else {
         echo "Error updating sale: " . mysqli_error($conn);
