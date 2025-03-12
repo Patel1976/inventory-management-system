@@ -223,9 +223,7 @@ function addProductToTable(productName, price, currencySymbol) {
                 <td>${currencySymbol} <span class="price">${price}</span></td>
                 <td><input type="number" name="sale-qty" class="form-control qty" style="width:100px;" value="1" min="1"></td>
                 <td>${currencySymbol} <span class="subtotal">${price}</span></td>
-                <td>
-                    <a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a>
-                </td>
+                <td><a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a></td>
             </tr>
         `;
         $("#productTable tbody").append(newRow);
@@ -348,4 +346,106 @@ $(document).ready(function () {
     $("#stock_search").on("focus", function () {
         $(this).val($(this).val());
     });
+    $(document).ready(function() {
+        $('#invoiceSelect').select2({
+            placeholder: "Choose Invoice",
+            allowClear: true
+        });
+    });
 });
+
+$(document).ready(function () {
+    $("#invoiceSelect").change(function () {
+        var invoiceNumber = $(this).val();
+        console.log("Invoice Number Selected:", invoiceNumber);
+        if (invoiceNumber) {
+            $.ajax({
+                url: "sale-return-fetch.php",
+                type: "POST",
+                data: { invoice_number: invoiceNumber },
+                dataType: "json",
+                success: function (response) {
+                    console.log("Response from PHP:", response);
+                    var dropdown = $("#returnsearch");
+                    dropdown.empty().append('<option value="">Select Product</option>');
+                    if (Array.isArray(response) && response.length > 0) {
+                        response.forEach(function (sale_items) {
+                            console.log("Adding Product:", sale_items.product_name);
+                            dropdown.append(`<option value="${sale_items.id}" 
+                                                data-qty="${sale_items.qty}" 
+                                                data-price="${sale_items.price}" 
+                                                data-subtotal="${sale_items.subtotal}" 
+                                                data-discount="${sale_items.discount}" 
+                                                data-tax="${sale_items.tax}">
+                                                ${sale_items.product_name}
+                                            </option>`);
+                        });
+                    } else {
+                        console.log("No products found in response.");
+                        dropdown.append('<option value="">No products found</option>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        } else {
+            $("#returnsearch").empty().append('<option value="">Select Product</option>');
+        }
+    });// Fetch and display product details when a product is selected
+    $("#returnsearch").change(function () {
+        var selectedOption = $(this).find(":selected");
+    
+        if (selectedOption.val()) {
+            var productId = selectedOption.val();
+            var productName = selectedOption.text().split(" - ")[0]; // Extract name
+            var maxQuantity = parseInt(selectedOption.attr("data-qty")) || 1; // Maximum available quantity
+            var price = parseFloat(selectedOption.attr("data-price")) || 0; // Convert to float
+            var subtotal = parseFloat(selectedOption.attr("data-subtotal")) || 0;
+            var discount = parseFloat(selectedOption.attr("data-discount")) || 0;
+            var tax = parseFloat(selectedOption.attr("data-tax")) || 0;
+            var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
+    
+            var productRow = `<tr>
+                                <td>${productName}</td>
+                                <td><input type="number" class="form-control return-qty" style="width:100px;" min="1" max="${maxQuantity}" value="1"></td>
+                                <td>${price.toFixed(2)}</td>
+                                <td class="discount">${discount.toFixed(2)}</td>
+                                <td class="tax">${tax.toFixed(2)}</td>
+                                <td class="subtotal">${subtotal.toFixed(2)}</td>
+                                <td><a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a></td>
+                            </tr>`;
+    
+            $("#saleReturnTable").append(productRow);
+    
+            // Update Total Amount to Pay
+            updateTotalAmount();
+        }
+    });
+    // Remove product row when "X" button is clicked
+    $(document).on("click", ".delete-set", function () {
+        $(this).closest("tr").remove();
+        updateTotalAmount();
+    });
+});
+function updateTotalAmount() {
+    var totalSubtotal = 0;
+    var totalTax = 0;
+    var totalDiscount = 0;
+
+    // Loop through each row in the table
+    $("#saleReturnTable tr").each(function () {
+        var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
+        var tax = parseFloat($(this).find(".tax").text()) || 0;
+        var discount = parseFloat($(this).find(".discount").text()) || 0;
+
+        totalSubtotal += subtotal;
+        totalTax += tax;
+        totalDiscount += discount;
+    });
+
+    var totalAmount = totalSubtotal + totalTax - totalDiscount;
+
+    // Update the input field
+    $("input[name='paid-payment']").val(totalAmount.toFixed(2));
+}
