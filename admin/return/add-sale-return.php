@@ -80,7 +80,7 @@ $pay_result = mysqli_query($conn, $pay_query);
                             <div class="form-group">
                                 <label>Product</label>
                                 <div class="input-groupicon">
-                                    <select id="returnsearch" class="select form-control">
+                                    <select id="salereturnsearch" class="select form-control">
                                         <option value="">Select Product</option>
                                     </select>
                                 </div>

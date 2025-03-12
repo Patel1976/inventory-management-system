@@ -366,7 +366,7 @@ $(document).ready(function () {
                 dataType: "json",
                 success: function (response) {
                     console.log("Response from PHP:", response);
-                    var dropdown = $("#returnsearch");
+                    var dropdown = $("#salereturnsearch");
                     dropdown.empty().append('<option value="">Select Product</option>');
                     if (Array.isArray(response) && response.length > 0) {
                         response.forEach(function (sale_items) {
@@ -390,10 +390,10 @@ $(document).ready(function () {
                 }
             });
         } else {
-            $("#returnsearch").empty().append('<option value="">Select Product</option>');
+            $("#salereturnsearch").empty().append('<option value="">Select Product</option>');
         }
     });// Fetch and display product details when a product is selected
-    $("#returnsearch").change(function () {
+    $("#salereturnsearch").change(function () {
         var selectedOption = $(this).find(":selected");
     
         if (selectedOption.val()) {
@@ -435,6 +435,102 @@ function updateTotalAmount() {
 
     // Loop through each row in the table
     $("#saleReturnTable tr").each(function () {
+        var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
+        var tax = parseFloat($(this).find(".tax").text()) || 0;
+        var discount = parseFloat($(this).find(".discount").text()) || 0;
+
+        totalSubtotal += subtotal;
+        totalTax += tax;
+        totalDiscount += discount;
+    });
+
+    var totalAmount = totalSubtotal + totalTax - totalDiscount;
+
+    // Update the input field
+    $("input[name='paid-payment']").val(totalAmount.toFixed(2));
+}
+
+$(document).ready(function () {
+    $("#invoiceSelect").change(function () {
+        var invoiceNumber = $(this).val();
+        console.log("Invoice Number Selected:", invoiceNumber);
+        if (invoiceNumber) {
+            $.ajax({
+                url: "purchase-return-fetch.php",
+                type: "POST",
+                data: { purchase_invoice: invoiceNumber },
+                dataType: "json",
+                success: function (response) {
+                    console.log("Response from PHP:", response);
+                    var dropdown = $("#purchasereturnsearch");
+                    dropdown.empty().append('<option value="">Select Product</option>');
+                    if (Array.isArray(response) && response.length > 0) {
+                        response.forEach(function (purchase_items) {
+                            console.log("Adding Product:", purchase_items.product_name);
+                             dropdown.append(`<option value="${purchase_items.id}" 
+                                                data-qty="${purchase_items.p_qty}" 
+                                                data-price="${purchase_items.p_price}" 
+                                                data-subtotal="${purchase_items.p_subtotal}" 
+                                                data-discount="${purchase_items.discount}" 
+                                                data-tax="${purchase_items.tax}">
+                                                ${purchase_items.product_name}
+                                            </option>`);
+                        });
+                    } else {
+                        console.log("No products found in response.");
+                        dropdown.append('<option value="">No products found</option>');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        } else {
+            $("#purchasereturnsearch").empty().append('<option value="">Select Product</option>');
+        }
+    });// Fetch and display product details when a product is selected
+    $("#purchasereturnsearch").change(function () {
+        var selectedOption = $(this).find(":selected");
+    
+        if (selectedOption.val()) {
+            var productId = selectedOption.val();
+            var productName = selectedOption.text().split(" - ")[0]; // Extract name
+            var maxQuantity = parseInt(selectedOption.attr("data-qty")) || 1; // Maximum available quantity
+            var price = parseFloat(selectedOption.attr("data-price")) || 0; // Convert to float
+            var subtotal = parseFloat(selectedOption.attr("data-subtotal")) || 0;
+            var discount = parseFloat(selectedOption.attr("data-discount")) || 0;
+            var tax = parseFloat(selectedOption.attr("data-tax")) || 0;
+            var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
+    
+            var productRow = `<tr>
+                                <td>${productName}</td>
+                                <td><input type="number" class="form-control return-qty" style="width:100px;" min="1" max="${maxQuantity}" value="1"></td>
+                                <td>${price.toFixed(2)}</td>
+                                <td class="discount">${discount.toFixed(2)}</td>
+                                <td class="tax">${tax.toFixed(2)}</td>
+                                <td class="subtotal">${subtotal.toFixed(2)}</td>
+                                <td><a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a></td>
+                            </tr>`;
+    
+            $("#purchaseReturnTable").append(productRow);
+    
+            // Update Total Amount to Pay
+            updateTotalAmount();
+        }
+    });
+    // Remove product row when "X" button is clicked
+    $(document).on("click", ".delete-set", function () {
+        $(this).closest("tr").remove();
+        updateTotalAmount();
+    });
+});
+function updateTotalAmount() {
+    var totalSubtotal = 0;
+    var totalTax = 0;
+    var totalDiscount = 0;
+
+    // Loop through each row in the table
+    $("#purchaseReturnTable tr").each(function () {
         var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
         var tax = parseFloat($(this).find(".tax").text()) || 0;
         var discount = parseFloat($(this).find(".discount").text()) || 0;
