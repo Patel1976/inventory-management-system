@@ -27,7 +27,8 @@ $pay_result = mysqli_query($conn, $pay_query);
 
 <div class="page-wrapper">
     <div class="content">
-        <form action="../../include/sale_return_crud.php" method="POST" enctype="multipart/form-data" id="salereturnForm">
+        <form action="../../include/return_crud.php" method="POST" enctype="multipart/form-data" id="salereturnForm">
+        <input type="hidden" name="sale_return_item_data" id="sale_return_item_data">
             <div class="page-header">
                 <div class="page-title">
                     <h4>Create Sales Return</h4>
@@ -114,7 +115,7 @@ $pay_result = mysqli_query($conn, $pay_query);
                                 <label>Paid Payment</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><?php echo $currencySymbol; ?></span>
-                                    <input type="text" name="paid-payment" 
+                                    <input type="text" name="sale-paid-payment" 
                                         value="<?php echo htmlspecialchars($paid_payment); ?>" required>
                                         <select class="select form-control" name="payment-type" style="width:200px;">
                                             <!-- <option value="">Choose Payment Type</option> -->

@@ -1,25 +1,46 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+
+$query = "SELECT p.*, 
+       c.name AS category_name, 
+       b.name AS brand_name, 
+       u.unit_name AS unit_name 
+FROM products p
+LEFT JOIN categories c ON p.category_id = c.id
+LEFT JOIN brands b ON p.brand_id = b.id
+LEFT JOIN units u ON p.unit_id = u.id
+ORDER BY p.id ASC;";
+$result = mysqli_query($conn, $query);
+// Fetch categories
+$category_query = "SELECT id, name FROM categories WHERE status = 'Active'";
+$category_result = mysqli_query($conn, $category_query);
+// Fetch brands
+$brand_query = "SELECT id, name FROM brands WHERE status = 'Active'";
+$brand_result = mysqli_query($conn, $brand_query);
+?>
 
 <div class="page-wrapper">
     <div class="content">
         <div class="page-header">
             <div class="page-title">
                 <h4>Inventory Report</h4>
-                <h6>Manage your Inventory Report</h6>
+                <h6>Manage Your Inventory Report</h6>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <div class="table-top">
                     <div class="search-set">
-                        <!-- <div class="search-path">
+                        <div class="search-path">
                             <a class="btn btn-filter" id="filter_search">
                                 <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
                                 <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg" alt="img"></span>
                             </a>
-                        </div> -->
+                        </div>
                         <div class="search-input">
-                            <a class="btn btn-searchset"><img src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img"></a>
+                            <a class="btn btn-searchset"><img
+                                    src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img"></a>
                         </div>
                     </div>
                     <div class="wordset">
@@ -39,128 +60,83 @@
                         </ul>
                     </div>
                 </div>
-<!-- 
-                <div class="card" id="filter_inputs">
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <div class="input-groupicon">
-                                        <input type="text" placeholder="From Date" class="datetimepicker">
-                                        <div class="addonset">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg" alt="img">
-                                        </div>
+                <form id="filterInvntoryForm">
+                    <div class="card" id="filter_inputs">
+                        <div class="card-body pb-0">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="category_id">
+                                            <option value="">Choose Category</option>
+                                            <?php while ($row = mysqli_fetch_assoc($category_result)) { ?>
+                                                <option value="<?php echo $row['id']; ?>" >
+                                                    <?php echo $row['name']; ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <div class="input-groupicon">
-                                        <input type="text" placeholder="To Date" class="datetimepicker">
-                                        <div class="addonset">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg" alt="img">
-                                        </div>
+                                <!-- Brand Dropdown -->
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="brand_id">
+                                            <option value="">Choose Brand</option>
+                                            <?php while ($row = mysqli_fetch_assoc($brand_result)) { ?>
+                                                <option value="<?php echo $row['id']; ?>" >
+                                                    <?php echo $row['name']; ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose Suppliers</option>
-                                        <option>Suppliers</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                            alt="img"></a>
+                                <div class="col-lg-1 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-filters">
+                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
+                                                alt="img">
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> -->
-
+                </form>
                 <div class="table-responsive">
-                    <table class="table datanew">
+                    <table class="table datanew-report">
                         <thead>
                             <tr>
-                                <th>
-                                    <label class="checkboxs">
-                                        <input type="checkbox" id="select-all">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </th>
-                                <th>Product Name</th>
-                                <th>SKU</th>
+                                <th>Product Code</th>
+                                <th>Name</th>
                                 <th>Category</th>
                                 <th>Brand</th>
-                                <th>Price</th>
                                 <th>Unit</th>
-                                <th>Instock qty</th>
+                                <th>InStock</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <?php while ($row = mysqli_fetch_assoc($result)) { 
+                                $name = $row['name'];
+                                $product_code = $row['product_code'];
+                                $qty = $row['quantity'];
+                                $image = !empty($row['image']) ? SITE_URL . "uploads/products/" . $row['image'] : SITE_URL . "assets/img/placeholder.png";
+                                $category_name = $row['category_name'] ?? 'N/A';
+                                $brand_name = $row['brand_name'] ?? 'N/A';
+                                $unit_name = $row['unit_name'] ?? 'N/A';
+                                ?>
                             <tr>
+                                <td><?php echo $product_code; ?></td>
                                 <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/product6.jpg" alt="product">
+                                    <a class="align-middle product-img">
+                                        <img src='<?php echo $image; ?>' alt="Brand Image" width="40">
                                     </a>
-                                    <a href="javascript:void(0);">Unpaired gray</a>
+                                    <a class="product-name"><?php echo $name; ?></a>
                                 </td>
-                                <td>PT006</td>
-                                <td>Shoes</td>
-                                <td>Adidas</td>
-                                <td>100.00</td>
-                                <td>pc</td>
-                                <td>50</td>
+                                <td><?php echo $category_name; ?></td>
+                                <td><?php echo $brand_name; ?></td>
+                                <td><?php echo $unit_name; ?></td>
+                                <td><?php echo $qty; ?></td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/product7.jpg" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Avocat</a>
-                                </td>
-                                <td>PT007</td>
-                                <td>Fruits</td>
-                                <td>N/D</td>
-                                <td>5.00</td>
-                                <td>kg</td>
-                                <td>29</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td class="productimgname">
-                                    <a class="product-img">
-                                        <img src="<?php echo SITE_URL; ?>assets/img/product/product9.jpg" alt="product">
-                                    </a>
-                                    <a href="javascript:void(0);">Earphones</a>
-                                </td>
-                                <td>PT009</td>
-                                <td>Computers</td>
-                                <td>N/D</td>
-                                <td>15.00</td>
-                                <td>pc</td>
-                                <td>11</td>
-                            </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

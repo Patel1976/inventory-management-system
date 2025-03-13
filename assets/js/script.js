@@ -2,6 +2,7 @@ $(document).ready(function () {
     var $wrapper = $('.main-wrapper'); var $slimScrolls = $('.slimscroll'); var $pageWrapper = $('.page-wrapper'); feather.replace(); $(window).resize(function () { if ($('.page-wrapper').length > 0) { var height = $(window).height(); $(".page-wrapper").css("min-height", height); } }); $('body').append('<div class="sidebar-overlay"></div>'); $(document).on('click', '#mobile_btn', function () { $wrapper.toggleClass('slide-nav'); $('.sidebar-overlay').toggleClass('opened'); $('html').addClass('menu-opened'); $('#task_window').removeClass('opened'); return false; }); $(".sidebar-overlay").on("click", function () { $('html').removeClass('menu-opened'); $(this).removeClass('opened'); $wrapper.removeClass('slide-nav'); $('.sidebar-overlay').removeClass('opened'); $('#task_window').removeClass('opened'); }); $(document).on("click", ".hideset", function () { $(this).parent().parent().parent().hide(); }); $(document).on("click", ".delete-set", function () { $(this).parent().parent().hide(); }); if ($('.product-slide').length > 0) { $('.product-slide').owlCarousel({ items: 1, margin: 30, dots: false, nav: true, loop: false, responsiveClass: true, responsive: { 0: { items: 1 }, 800: { items: 1 }, 1170: { items: 1 } } }); }
     if ($('.owl-product').length > 0) { var owl = $('.owl-product'); owl.owlCarousel({ margin: 10, dots: false, nav: true, loop: false, touchDrag: false, mouseDrag: false, responsive: { 0: { items: 2 }, 768: { items: 4 }, 1170: { items: 8 } } }); }
     if ($(".datanew").length > 0) { var table = $(".datanew").DataTable({ sDom: "fBtlpi", buttons: [{ extend: "pdfHtml5", text: "PDF", titleAttr: "Export to PDF", className: "pdfBtn d-none" }, { extend: "excelHtml5", text: "Excel", titleAttr: "Export to Excel", className: "excelBtn d-none" }, { extend: "print", text: "Print", titleAttr: "Print", className: "printBtn d-none" }], bFilter: true, pagingType: "numbers", ordering: true, order: [], columnDefs: [{ orderable: false, targets: [0, -1] }], drawCallback: function () { $("#brandTable td").removeClass("sorting"); }, "language": { "search": ' ', "sLengthMenu": '_MENU_', "searchPlaceholder": "Search...", "info": "_START_ - _END_ of _TOTAL_ items" }, "initComplete": function (settings, json) { $('.dataTables_filter').appendTo('#tableSearch'); $('.dataTables_filter').appendTo('.search-input'); }, }); $(".wordset ul li:eq(0) a").on("click", function (e) { e.preventDefault(), table.button(".pdfBtn").trigger(); }); $(".wordset ul li:eq(1) a").on("click", function (e) { e.preventDefault(), table.button(".excelBtn").trigger(); }); $(".wordset ul li:eq(2) a").on("click", function (e) { e.preventDefault(), table.button(".printBtn").trigger(); }); }
+    if ($(".datanew-report").length > 0) { var table = $(".datanew-report").DataTable({ sDom: "fBtlpi", buttons: [{ extend: "pdfHtml5", text: "PDF", titleAttr: "Export to PDF", className: "pdfBtn d-none", exportOptions: { columns: ':visible', modifier: { search: 'applied' } } }, { extend: "excelHtml5", text: "Excel", titleAttr: "Export to Excel", className: "excelBtn d-none", exportOptions: { columns: ':visible', modifier: { search: 'applied' } } }, { extend: "print", text: "Print", titleAttr: "Print", className: "printBtn d-none", exportOptions: { columns: ':visible', modifier: { search: 'applied' } } }], bFilter: true, pagingType: "numbers", ordering: true, order: [], drawCallback: function () { $("#brandTable td").removeClass("sorting"); }, "language": { "search": ' ', "sLengthMenu": '_MENU_', "searchPlaceholder": "Search...", "info": "_START_ - _END_ of _TOTAL_ items" }, "initComplete": function (settings, json) { $('.dataTables_filter').appendTo('#tableSearch'); $('.dataTables_filter').appendTo('.search-input'); }, }); $(".wordset ul li:eq(0) a").on("click", function (e) { e.preventDefault(), table.button(".pdfBtn").trigger(); }); $(".wordset ul li:eq(1) a").on("click", function (e) { e.preventDefault(), table.button(".excelBtn").trigger(); }); $(".wordset ul li:eq(2) a").on("click", function (e) { e.preventDefault(), table.button(".printBtn").trigger(); }); }
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader(); reader.onload = function (e) { $('#blah').attr('src', e.target.result); }
@@ -392,10 +393,10 @@ $(document).ready(function () {
         } else {
             $("#salereturnsearch").empty().append('<option value="">Select Product</option>');
         }
-    });// Fetch and display product details when a product is selected
+    });
+    // Fetch and display product details when a product is selected
     $("#salereturnsearch").change(function () {
         var selectedOption = $(this).find(":selected");
-    
         if (selectedOption.val()) {
             var productId = selectedOption.val();
             var productName = selectedOption.text().split(" - ")[0]; // Extract name
@@ -403,52 +404,107 @@ $(document).ready(function () {
             var price = parseFloat(selectedOption.attr("data-price")) || 0; // Convert to float
             var subtotal = parseFloat(selectedOption.attr("data-subtotal")) || 0;
             var discount = parseFloat(selectedOption.attr("data-discount")) || 0;
-            var tax = parseFloat(selectedOption.attr("data-tax")) || 0;
+            var totalTax = parseFloat(selectedOption.attr("data-tax")) || 0;
+            var taxPerUnit = totalTax / maxQuantity; // Calculate tax per unit
             var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
-    
             var productRow = `<tr>
                                 <td>${productName}</td>
                                 <td><input type="number" class="form-control return-qty" style="width:100px;" min="1" max="${maxQuantity}" value="1"></td>
-                                <td>${price.toFixed(2)}</td>
+                                <td class="price">${price.toFixed(2)}</td>
                                 <td class="discount">${discount.toFixed(2)}</td>
-                                <td class="tax">${tax.toFixed(2)}</td>
-                                <td class="subtotal">${subtotal.toFixed(2)}</td>
+                                <td class="tax" data-tax-per-unit="${taxPerUnit.toFixed(2)}">${taxPerUnit.toFixed(2)}</td>
+                                <td class="subtotal">${(price + taxPerUnit - discount).toFixed(2)}</td>
                                 <td><a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a></td>
                             </tr>`;
-    
             $("#saleReturnTable").append(productRow);
-    
             // Update Total Amount to Pay
             updateTotalAmount();
         }
+    });
+    // Handle quantity change and recalculate tax and subtotal
+    $(document).on("input", ".return-qty", function () {
+        var row = $(this).closest("tr");
+        var quantity = parseInt($(this).val()) || 1;
+        var maxQuantity = parseInt($(this).attr("max")) || 1;
+        var price = parseFloat(row.find(".price").text()) || 0;
+        var discount = parseFloat(row.find(".discount").text()) || 0;
+        var taxPerUnit = parseFloat(row.find(".tax").attr("data-tax-per-unit")) || 0; // Get tax per unit
+        var taxAmount = taxPerUnit * quantity; // Correct tax calculation based on quantity
+        var subtotal = (price * quantity) + taxAmount - discount; // Correct subtotal calculation
+        row.find(".tax").text(taxAmount.toFixed(2)); // Update tax field
+        row.find(".subtotal").text(subtotal.toFixed(2)); // Update subtotal field
+        updateTotalAmount();
     });
     // Remove product row when "X" button is clicked
     $(document).on("click", ".delete-set", function () {
         $(this).closest("tr").remove();
         updateTotalAmount();
     });
+    // Function to update the total amount
+    function updateTotalAmount() {
+        var totalSubtotal = 0;
+        var totalTax = 0;
+        var totalDiscount = 0;
+        var saleReturnItemData = [];
+        $("#saleReturnTable tr").each(function () {
+            var productName = $(this).find("td:first").text();
+            var quantity = parseInt($(this).find(".return-qty").val()) || 1;
+            var price = parseFloat($(this).find(".price").text()) || 0;
+            var discount = parseFloat($(this).find(".discount").text()) || 0;
+            var tax = parseFloat($(this).find(".tax").text()) || 0;
+            var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
+            totalSubtotal += subtotal;
+            totalTax += tax;
+            totalDiscount += discount;
+            saleReturnItemData.push({
+                product_name: productName,
+                quantity: quantity,
+                price: price,
+                discount: discount,
+                tax: tax,
+                subtotal: subtotal
+            });
+        });
+        var totalAmount = totalSubtotal + totalTax - totalDiscount;
+        // Update hidden input fields
+        $("#return_total_amount").val(totalAmount.toFixed(2));
+        $("#sale_return_item_data").val(JSON.stringify(saleReturnItemData));
+        // Update UI
+        $("input[name='sale-paid-payment']").val(totalAmount.toFixed(2));
+    }
 });
-function updateTotalAmount() {
-    var totalSubtotal = 0;
-    var totalTax = 0;
-    var totalDiscount = 0;
+$(document).ready(function () {
+    $("#salereturnForm").submit(function (event) {
+        var saleReturnItems = [];
 
-    // Loop through each row in the table
-    $("#saleReturnTable tr").each(function () {
-        var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
-        var tax = parseFloat($(this).find(".tax").text()) || 0;
-        var discount = parseFloat($(this).find(".discount").text()) || 0;
+        // Loop through each row in the table
+        $("#saleReturnTable tr").each(function () {
+            var productName = $(this).find("td:eq(0)").text().trim();
+            var quantity = $(this).find(".return-qty").val();
+            var unitPrice = parseFloat($(this).find("td:eq(2)").text()) || 0;
+            var discount = parseFloat($(this).find(".discount").text()) || 0;
+            var tax = parseFloat($(this).find(".tax").text()) || 0;
+            var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
 
-        totalSubtotal += subtotal;
-        totalTax += tax;
-        totalDiscount += discount;
+            if (productName && quantity > 0) {
+                saleReturnItems.push({
+                    product_name: productName,
+                    quantity: quantity,
+                    unit_price: unitPrice,
+                    discount: discount,
+                    tax: tax,
+                    subtotal: subtotal
+                });
+            }
+        });
+
+        // Store JSON string in the hidden input field
+        $("#sale_return_item_data").val(JSON.stringify(saleReturnItems));
+
+        // Optional: Log data before submission for debugging
+        console.log("Sale Return Data:", saleReturnItems);
     });
-
-    var totalAmount = totalSubtotal + totalTax - totalDiscount;
-
-    // Update the input field
-    $("input[name='paid-payment']").val(totalAmount.toFixed(2));
-}
+});
 
 $(document).ready(function () {
     $("#invoiceSelect").change(function () {
@@ -467,7 +523,7 @@ $(document).ready(function () {
                     if (Array.isArray(response) && response.length > 0) {
                         response.forEach(function (purchase_items) {
                             console.log("Adding Product:", purchase_items.product_name);
-                             dropdown.append(`<option value="${purchase_items.id}" 
+                            dropdown.append(`<option value="${purchase_items.id}" 
                                                 data-qty="${purchase_items.p_qty}" 
                                                 data-price="${purchase_items.p_price}" 
                                                 data-subtotal="${purchase_items.p_subtotal}" 
@@ -488,10 +544,12 @@ $(document).ready(function () {
         } else {
             $("#purchasereturnsearch").empty().append('<option value="">Select Product</option>');
         }
-    });// Fetch and display product details when a product is selected
+    });
+
+    // Fetch and display product details when a product is selected
     $("#purchasereturnsearch").change(function () {
         var selectedOption = $(this).find(":selected");
-    
+
         if (selectedOption.val()) {
             var productId = selectedOption.val();
             var productName = selectedOption.text().split(" - ")[0]; // Extract name
@@ -499,49 +557,159 @@ $(document).ready(function () {
             var price = parseFloat(selectedOption.attr("data-price")) || 0; // Convert to float
             var subtotal = parseFloat(selectedOption.attr("data-subtotal")) || 0;
             var discount = parseFloat(selectedOption.attr("data-discount")) || 0;
-            var tax = parseFloat(selectedOption.attr("data-tax")) || 0;
+            var totalTax = parseFloat(selectedOption.attr("data-tax")) || 0;
+            var taxPerUnit = totalTax / maxQuantity; // Correctly calculate tax per unit
+
             var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
-    
+
             var productRow = `<tr>
                                 <td>${productName}</td>
                                 <td><input type="number" class="form-control return-qty" style="width:100px;" min="1" max="${maxQuantity}" value="1"></td>
-                                <td>${price.toFixed(2)}</td>
+                                <td class="price">${price.toFixed(2)}</td>
                                 <td class="discount">${discount.toFixed(2)}</td>
-                                <td class="tax">${tax.toFixed(2)}</td>
-                                <td class="subtotal">${subtotal.toFixed(2)}</td>
+                                <td class="tax" data-tax-per-unit="${taxPerUnit.toFixed(2)}">${taxPerUnit.toFixed(2)}</td>
+                                <td class="subtotal">${(price + taxPerUnit - discount).toFixed(2)}</td>
                                 <td><a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a></td>
                             </tr>`;
-    
+
             $("#purchaseReturnTable").append(productRow);
-    
-            // Update Total Amount to Pay
+
+            // Update Total Amount
             updateTotalAmount();
         }
     });
+
+    // Handle quantity change and recalculate tax and subtotal
+    $(document).on("input", ".return-qty", function () {
+        var row = $(this).closest("tr");
+        var quantity = parseInt($(this).val()) || 1;
+        var maxQuantity = parseInt($(this).attr("max")) || 1;
+        var price = parseFloat(row.find(".price").text()) || 0;
+        var discount = parseFloat(row.find(".discount").text()) || 0;
+        var taxPerUnit = parseFloat(row.find(".tax").attr("data-tax-per-unit")) || 0; // Get correct per-unit tax
+        var taxAmount = taxPerUnit * quantity; // Correct tax calculation
+        var subtotal = (price * quantity) + taxAmount - discount; // Correct subtotal calculation
+
+        row.find(".tax").text(taxAmount.toFixed(2)); // Update tax field
+        row.find(".subtotal").text(subtotal.toFixed(2)); // Update subtotal field
+
+        updateTotalAmount();
+    });
+
     // Remove product row when "X" button is clicked
     $(document).on("click", ".delete-set", function () {
         $(this).closest("tr").remove();
         updateTotalAmount();
     });
+
+    // Function to update the total amount
+    function updateTotalAmount() {
+        var totalSubtotal = 0;
+        var totalTax = 0;
+        var totalDiscount = 0;
+        var purchaseReturnItemData = [];
+
+        $("#purchaseReturnTable tr").each(function () {
+            var productName = $(this).find("td:first").text();
+            var quantity = parseInt($(this).find(".return-qty").val()) || 1;
+            var price = parseFloat($(this).find(".price").text()) || 0;
+            var discount = parseFloat($(this).find(".discount").text()) || 0;
+            var tax = parseFloat($(this).find(".tax").text()) || 0;
+            var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
+
+            totalSubtotal += subtotal;
+            totalTax += tax;
+            totalDiscount += discount;
+
+            purchaseReturnItemData.push({
+                product_name: productName,
+                quantity: quantity,
+                price: price,
+                discount: discount,
+                tax: tax,
+                subtotal: subtotal
+            });
+        });
+
+        var totalAmount = totalSubtotal + totalTax - totalDiscount;
+
+        // Update hidden input fields
+        $("#return_total_amount").val(totalAmount.toFixed(2));
+        $("#purchase_return_item_data").val(JSON.stringify(purchaseReturnItemData));
+
+        // Update UI
+        $("input[name='purchase-paid-payment']").val(totalAmount.toFixed(2));
+    }
 });
-function updateTotalAmount() {
-    var totalSubtotal = 0;
-    var totalTax = 0;
-    var totalDiscount = 0;
+$(document).ready(function () {
+    $("#purchasereturnForm").submit(function (event) {
+        var purchaseReturnItems = [];
 
-    // Loop through each row in the table
-    $("#purchaseReturnTable tr").each(function () {
-        var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
-        var tax = parseFloat($(this).find(".tax").text()) || 0;
-        var discount = parseFloat($(this).find(".discount").text()) || 0;
+        // Loop through each row in the table
+        $("#purchaseReturnTable tr").each(function () {
+            var productName = $(this).find("td:eq(0)").text().trim();
+            var quantity = $(this).find(".return-qty").val();
+            var unitPrice = parseFloat($(this).find("td:eq(2)").text()) || 0;
+            var discount = parseFloat($(this).find(".discount").text()) || 0;
+            var tax = parseFloat($(this).find(".tax").text()) || 0;
+            var subtotal = parseFloat($(this).find(".subtotal").text()) || 0;
 
-        totalSubtotal += subtotal;
-        totalTax += tax;
-        totalDiscount += discount;
+            if (productName && quantity > 0) {
+                purchaseReturnItems.push({
+                    product_name: productName,
+                    quantity: quantity,
+                    unit_price: unitPrice,
+                    discount: discount,
+                    tax: tax,
+                    subtotal: subtotal
+                });
+            }
+        });
+
+        // Store JSON string in the hidden input field
+        $("#purchase_return_item_data").val(JSON.stringify(purchaseReturnItems));
+
+        // Optional: Log data before submission for debugging
+        console.log("Purchase Return Data:", purchaseReturnItems);
     });
+});
 
-    var totalAmount = totalSubtotal + totalTax - totalDiscount;
 
-    // Update the input field
-    $("input[name='paid-payment']").val(totalAmount.toFixed(2));
-}
+$(document).ready(function () {
+    $("#filterSaleForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "fetch-report-value.php",
+            type: "POST",
+            data: $(this).serialize() + "&report_type=sales",
+            success: function (response) {
+                $("tbody").html(response);
+            }
+        });
+    });
+    $("#filterPurchaseForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "fetch-report-value.php",
+            type: "POST",
+            data: $(this).serialize() + "&report_type=purchases",
+            success: function (response) {
+                $("tbody").html(response);
+            }
+        });
+    });
+    $("#filterInvntoryForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "fetch-report-value.php",
+            type: "POST",
+            data: $(this).serialize() + "&report_type=inventory",
+            success: function (response) {
+                $("tbody").html(response);
+            }
+        });
+    });
+});

@@ -1,765 +1,123 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+
+
+$supp_query = "SELECT * FROM suppliers";
+$supp_result = mysqli_query($conn, $supp_query);
+?>
 
 <div class="page-wrapper">
     <div class="content">
         <div class="page-header">
             <div class="page-title">
-                <h4>Supplier Report</h4>
-                <h6>Manage your Supplier Report</h6>
+                <h4>Purchase Report</h4>
+                <h6>Manage Your Purchase Report</h6>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="tabs-set">
-                    <!-- <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="purchase-tab" data-bs-toggle="tab"
-                                data-bs-target="#purchase" type="button" role="tab" aria-controls="purchase"
-                                aria-selected="true">Purchase</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment"
-                                type="button" role="tab" aria-controls="payment" aria-selected="false">Payment</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="return-tab" data-bs-toggle="tab" data-bs-target="#return"
-                                type="button" role="tab" aria-controls="return" aria-selected="false">Return</button>
-                        </li>
-                    </ul> -->
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="purchase" role="tabpanel"
-                            aria-labelledby="purchase-tab">
-                            <div class="table-top">
-                                <div class="search-set">
-                                    <div class="search-input">
-                                        <a class="btn btn-searchset"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg"
-                                                alt="img"></a>
-                                    </div>
-                                </div>
-                                <div class="wordset">
-                                    <ul>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/pdf.svg" alt="img"></a>
-                                        </li>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/excel.svg"
-                                                    alt="img"></a>
-                                        </li>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg"
-                                                    alt="img"></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table datanew">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </th>
-                                            <th>Purchased Date</th>
-                                            <th>Product Name</th>
-                                            <th>Purchased Amount</th>
-                                            <th>Purchased QTY</th>
-                                            <th>Paid</th>
-                                            <th>Balance</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product6.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Unpaired gray</a>
-                                            </td>
-                                            <td>1210.00</td>
-                                            <td>105</td>
-                                            <td>0.00</td>
-                                            <td>12100.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product7.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Avocat</a>
-                                            </td>
-                                            <td>4500.00</td>
-                                            <td>41</td>
-                                            <td>0.00</td>
-                                            <td>4500.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>07/12/2021 06:58:25</td>
-                                            <td class="productimgname">
-                                                <a class="product-img">
-                                                    <img src="<?php echo SITE_URL; ?>assets/img/product/product9.jpg"
-                                                        alt="product">
-                                                </a>
-                                                <a href="javascript:void(0);">Earphones</a>
-                                            </td>
-                                            <td>500.00</td>
-                                            <td>28</td>
-                                            <td>0.00</td>
-                                            <td>500.00</td>
-                                            <td><span class="badges bg-lightgrey">Recieved</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                <div class="table-top">
+                    <div class="search-set">
+                        <div class="search-path">
+                            <a class="btn btn-filter" id="filter_search">
+                                <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
+                                <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg" alt="img"></span>
+                            </a>
                         </div>
-                        <div class="tab-pane fade" id="payment" role="tabpanel">
-                            <div class="table-top">
-                                <div class="search-set">
-                                    <div class="search-path">
-                                        <a class="btn btn-filter" id="filter_search2">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                            <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg"
-                                                    alt="img"></span>
-                                        </a>
-                                    </div>
-                                    <div class="search-input">
-                                        <a class="btn btn-searchset"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg"
-                                                alt="img"></a>
-                                    </div>
-                                </div>
-                                <div class="wordset">
-                                    <ul>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/pdf.svg" alt="img"></a>
-                                        </li>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/excel.svg"
-                                                    alt="img"></a>
-                                        </li>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg"
-                                                    alt="img"></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="card" id="filter_inputs2">
-                                <div class="card-body pb-0">
-                                    <div class="row">
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="From Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="To Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                            <div class="form-group">
-                                                <a class="btn btn-filters ms-auto"><img
-                                                        src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                                        alt="img"></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table datanew">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </th>
-                                            <th>DATE</th>
-                                            <th>Purchase</th>
-                                            <th>Reference</th>
-                                            <th>Supplier Name </th>
-                                            <th>Amount</th>
-                                            <th>Paid</th>
-                                            <th>paid By</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1001</td>
-                                            <td>INV/PR_1001</td>
-                                            <td>Thomas21</td>
-                                            <td>1500.00</td>
-                                            <td>1500.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1002</td>
-                                            <td>INV/PR_1002</td>
-                                            <td>504Benjamin</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1003</td>
-                                            <td>INV/PR_1003</td>
-                                            <td>James 524</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1004</td>
-                                            <td>INV/PR_1004</td>
-                                            <td>Bruklin2022 </td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1005</td>
-                                            <td>INV/PR_1005</td>
-                                            <td>BeverlyWIN25 </td>
-                                            <td>150.00</td>
-                                            <td>150.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1006</td>
-                                            <td>INV/PR_1006</td>
-                                            <td>BHR256 </td>
-                                            <td>100.00</td>
-                                            <td>100.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1007</td>
-                                            <td>INV/PR_1007</td>
-                                            <td>Alwin243 </td>
-                                            <td>5.00</td>
-                                            <td>5.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1008</td>
-                                            <td>INV/PR_1008</td>
-                                            <td>FredJ25 </td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1009</td>
-                                            <td>INV/PR_1009</td>
-                                            <td>Cras56 </td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1010</td>
-                                            <td>INV/PR_1010</td>
-                                            <td>Cras56 </td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1011</td>
-                                            <td>INV/PR_1011</td>
-                                            <td>FredJ25 </td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1012</td>
-                                            <td>INV/PR_1012</td>
-                                            <td>Cras56 </td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>2022-03-10 </td>
-                                            <td>PR_1013</td>
-                                            <td>INV/PR_1013</td>
-                                            <td>Cras56 </td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td>Cash</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="search-input">
+                            <a class="btn btn-searchset"><img
+                                    src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img"></a>
                         </div>
-                        <div class="tab-pane fade" id="return" role="tabpanel">
-                            <div class="table-top">
-                                <div class="search-set">
-                                    <div class="search-path">
-                                        <a class="btn btn-filter" id="filter_search1">
-                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
-                                            <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg"
-                                                    alt="img"></span>
-                                        </a>
-                                    </div>
-                                    <div class="search-input">
-                                        <a class="btn btn-searchset"><img
-                                                src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg"
-                                                alt="img"></a>
-                                    </div>
-                                </div>
-                                <div class="wordset">
-                                    <ul>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/pdf.svg" alt="img"></a>
-                                        </li>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/excel.svg"
-                                                    alt="img"></a>
-                                        </li>
-                                        <li>
-                                            <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
-                                                    src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg"
-                                                    alt="img"></a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="card" id="filter_inputs1">
-                                <div class="card-body pb-0">
-                                    <div class="row">
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="From Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-6 col-12">
-                                            <div class="form-group">
-                                                <div class="input-groupicon">
-                                                    <input type="text" placeholder="To Date" class="datetimepicker">
-                                                    <div class="addonset">
-                                                        <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
-                                                            alt="img">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-1 col-sm-6 col-12 ms-auto">
-                                            <div class="form-group">
-                                                <a class="btn btn-filters ms-auto"><img
-                                                        src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
-                                                        alt="img"></a>
+                    </div>
+                    <div class="wordset">
+                        <ul>
+                            <li>
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
+                                        src="<?php echo SITE_URL; ?>assets/img/icons/pdf.svg" alt="img"></a>
+                            </li>
+                            <li>
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
+                                        src="<?php echo SITE_URL; ?>assets/img/icons/excel.svg" alt="img"></a>
+                            </li>
+                            <li>
+                                <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
+                                        src="<?php echo SITE_URL; ?>assets/img/icons/printer.svg" alt="img"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <form id="filterPurchaseForm">
+                    <div class="card" id="filter_inputs">
+                        <div class="card-body pb-0">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <div class="input-groupicon">
+                                            <input type="text" placeholder="From Date" name="from_date"
+                                                value="<?php echo isset($_GET['from_date']) ? $_GET['from_date'] : ''; ?>"
+                                                class="datetimepicker">
+                                            <div class="addonset">
+                                                <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
+                                                    alt="img">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table datanew">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </th>
-                                            <th>Reference</th>
-                                            <th>Supplier Name </th>
-                                            <th>Amount</th>
-                                            <th>Paid</th>
-                                            <th>Amount Due</th>
-                                            <th>Status</th>
-                                            <th>Paument Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1001</td>
-                                            <td>Thomas21</td>
-                                            <td>1500.00</td>
-                                            <td>1500.00</td>
-                                            <td>1500.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgreen">Paid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1002</td>
-                                            <td>504Benjamin</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightred">Overdue</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1003</td>
-                                            <td>James 524</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightred">Overdue</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1004</td>
-                                            <td>Bruklin2022</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgreen">Paid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1005</td>
-                                            <td>BeverlyWIN25</td>
-                                            <td>150.00</td>
-                                            <td>150.00</td>
-                                            <td>150.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightred">Overdue</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1006</td>
-                                            <td>BHR256</td>
-                                            <td>100.00</td>
-                                            <td>100.00</td>
-                                            <td>100.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightred">Overdue</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1007</td>
-                                            <td>Alwin243</td>
-                                            <td>5.00</td>
-                                            <td>5.00</td>
-                                            <td>5.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgreen">Paid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1008</td>
-                                            <td>FredJ25</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgrey">Unpaid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1009</td>
-                                            <td>FredJ25</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td>10.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgrey">Unpaid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1010</td>
-                                            <td>Cras56</td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgrey">Unpaid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1010</td>
-                                            <td>Grace2022</td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgrey">Unpaid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1011</td>
-                                            <td>Cras56</td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgrey">Unpaid</span></td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <label class="checkboxs">
-                                                    <input type="checkbox">
-                                                    <span class="checkmarks"></span>
-                                                </label>
-                                            </td>
-                                            <td>RT_1012</td>
-                                            <td>Grace2022</td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td>15.00</td>
-                                            <td><span class="badges bg-lightgreen">Completed</span></td>
-                                            <td><span class="badges bg-lightgrey">Unpaid</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <div class="input-groupicon">
+                                            <input type="text" placeholder="To Date" name="to_date"
+                                                value="<?php echo isset($_GET['to_date']) ? $_GET['to_date'] : ''; ?>"
+                                                class="datetimepicker">
+                                            <div class="addonset">
+                                                <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
+                                                    alt="img">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="supplier">
+                                            <option value="">Choose Supplier</option>
+                                            <?php
+                                            while ($supp_row = mysqli_fetch_assoc($supp_result)) {
+                                                $selected = ($purchase_id > 0 && isset($row['supplier_id']) && $row['supplier_id'] == $supp_row['id']) ? 'selected' : '';
+                                                echo "<option value='" . $supp_row['id'] . "' $selected>" . $supp_row['name'] . "</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-filters">
+                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
+                                                alt="img">
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table datanew-report">
+                        <thead>
+                            <tr>
+                                <th>Supplier</th>
+                                <th>Total Items</th>
+                                <th>Total Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Due Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="searchpart">
-    <div class="searchcontent">
-        <div class="searchhead">
-            <h3>Search </h3>
-            <a id="closesearch"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
-        </div>
-        <div class="searchcontents">
-            <div class="searchparts">
-                <input type="text" placeholder="search here">
-                <a class="btn btn-searchs">Search</a>
-            </div>
-            <div class="recentsearch">
-                <h2>Recent Search</h2>
-                <ul>
-                    <li>
-                        <h6><i class="fa fa-search me-2"></i> Settings</h6>
-                    </li>
-                    <li>
-                        <h6><i class="fa fa-search me-2"></i> Report</h6>
-                    </li>
-                    <li>
-                        <h6><i class="fa fa-search me-2"></i> Invoice</h6>
-                    </li>
-                    <li>
-                        <h6><i class="fa fa-search me-2"></i> Sales</h6>
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
