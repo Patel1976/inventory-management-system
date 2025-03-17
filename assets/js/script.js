@@ -2,7 +2,7 @@ $(document).ready(function () {
     var $wrapper = $('.main-wrapper'); var $slimScrolls = $('.slimscroll'); var $pageWrapper = $('.page-wrapper'); feather.replace(); $(window).resize(function () { if ($('.page-wrapper').length > 0) { var height = $(window).height(); $(".page-wrapper").css("min-height", height); } }); $('body').append('<div class="sidebar-overlay"></div>'); $(document).on('click', '#mobile_btn', function () { $wrapper.toggleClass('slide-nav'); $('.sidebar-overlay').toggleClass('opened'); $('html').addClass('menu-opened'); $('#task_window').removeClass('opened'); return false; }); $(".sidebar-overlay").on("click", function () { $('html').removeClass('menu-opened'); $(this).removeClass('opened'); $wrapper.removeClass('slide-nav'); $('.sidebar-overlay').removeClass('opened'); $('#task_window').removeClass('opened'); }); $(document).on("click", ".hideset", function () { $(this).parent().parent().parent().hide(); }); $(document).on("click", ".delete-set", function () { $(this).parent().parent().hide(); }); if ($('.product-slide').length > 0) { $('.product-slide').owlCarousel({ items: 1, margin: 30, dots: false, nav: true, loop: false, responsiveClass: true, responsive: { 0: { items: 1 }, 800: { items: 1 }, 1170: { items: 1 } } }); }
     if ($('.owl-product').length > 0) { var owl = $('.owl-product'); owl.owlCarousel({ margin: 10, dots: false, nav: true, loop: false, touchDrag: false, mouseDrag: false, responsive: { 0: { items: 2 }, 768: { items: 4 }, 1170: { items: 8 } } }); }
     if ($(".datanew").length > 0) { var table = $(".datanew").DataTable({ sDom: "fBtlpi", buttons: [{ extend: "pdfHtml5", text: "PDF", titleAttr: "Export to PDF", className: "pdfBtn d-none" }, { extend: "excelHtml5", text: "Excel", titleAttr: "Export to Excel", className: "excelBtn d-none" }, { extend: "print", text: "Print", titleAttr: "Print", className: "printBtn d-none" }], bFilter: true, pagingType: "numbers", ordering: true, order: [], columnDefs: [{ orderable: false, targets: [0, -1] }], drawCallback: function () { $("#brandTable td").removeClass("sorting"); }, "language": { "search": ' ', "sLengthMenu": '_MENU_', "searchPlaceholder": "Search...", "info": "_START_ - _END_ of _TOTAL_ items" }, "initComplete": function (settings, json) { $('.dataTables_filter').appendTo('#tableSearch'); $('.dataTables_filter').appendTo('.search-input'); }, }); $(".wordset ul li:eq(0) a").on("click", function (e) { e.preventDefault(), table.button(".pdfBtn").trigger(); }); $(".wordset ul li:eq(1) a").on("click", function (e) { e.preventDefault(), table.button(".excelBtn").trigger(); }); $(".wordset ul li:eq(2) a").on("click", function (e) { e.preventDefault(), table.button(".printBtn").trigger(); }); }
-    if ($(".datanew-report").length > 0) { var table = $(".datanew-report").DataTable({ sDom: "fBtlpi", buttons: [{ extend: "pdfHtml5", text: "PDF", titleAttr: "Export to PDF", className: "pdfBtn d-none", exportOptions: { columns: ':visible', modifier: { search: 'applied' } } }, { extend: "excelHtml5", text: "Excel", titleAttr: "Export to Excel", className: "excelBtn d-none", exportOptions: { columns: ':visible', modifier: { search: 'applied' } } }, { extend: "print", text: "Print", titleAttr: "Print", className: "printBtn d-none", exportOptions: { columns: ':visible', modifier: { search: 'applied' } } }], bFilter: true, pagingType: "numbers", ordering: true, order: [], drawCallback: function () { $("#brandTable td").removeClass("sorting"); }, "language": { "search": ' ', "sLengthMenu": '_MENU_', "searchPlaceholder": "Search...", "info": "_START_ - _END_ of _TOTAL_ items" }, "initComplete": function (settings, json) { $('.dataTables_filter').appendTo('#tableSearch'); $('.dataTables_filter').appendTo('.search-input'); }, }); $(".wordset ul li:eq(0) a").on("click", function (e) { e.preventDefault(), table.button(".pdfBtn").trigger(); }); $(".wordset ul li:eq(1) a").on("click", function (e) { e.preventDefault(), table.button(".excelBtn").trigger(); }); $(".wordset ul li:eq(2) a").on("click", function (e) { e.preventDefault(), table.button(".printBtn").trigger(); }); }
+    if ($(".datanew-report").length > 0) { $(".datanew-report").each(function (e, t) { var a = $(t).DataTable({ sDom: "fBtlpi", buttons: [{ extend: "pdfHtml5", text: "PDF", titleAttr: "Export to PDF", className: "pdfBtn d-none", exportOptions: { columns: ":visible", modifier: { search: "applied" } } }, { extend: "excelHtml5", text: "Excel", titleAttr: "Export to Excel", className: "excelBtn d-none", exportOptions: { columns: ":visible", modifier: { search: "applied" } } }, { extend: "print", text: "Print", titleAttr: "Print", className: "printBtn d-none", exportOptions: { columns: ":visible", modifier: { search: "applied" } } }], bFilter: !0, pagingType: "numbers", ordering: !0, order: [], drawCallback: function () { $(t).find("td").removeClass("sorting") }, language: { search: " ", sLengthMenu: "_MENU_", searchPlaceholder: "Search...", info: "_START_ - _END_ of _TOTAL_ items" }, initComplete: function () { $(this).parents(".tab-pane").find(".search-input").append($(this).closest(".dataTables_wrapper").find(".dataTables_filter")) } }); var n = $(t).closest(".tab-pane").find(".wordset ul li"); n.eq(0).find("a").on("click", function (e) { e.preventDefault(), a.button(".pdfBtn").trigger() }), n.eq(1).find("a").on("click", function (e) { e.preventDefault(), a.button(".excelBtn").trigger() }), n.eq(2).find("a").on("click", function (e) { e.preventDefault(), a.button(".printBtn").trigger() }) }) }
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader(); reader.onload = function (e) { $('#blah').attr('src', e.target.result); }
@@ -38,7 +38,7 @@ $(document).ready(function () {
         if ($('body').hasClass('mini-sidebar')) { $('body').removeClass('mini-sidebar'); $(this).addClass('active'); $('.subdrop + ul').slideDown(); localStorage.setItem('screenModeNightTokenState', 'night'); setTimeout(function () { $("body").removeClass("mini-sidebar"); $(".header-left").addClass("active"); }, 100); } else { $('body').addClass('mini-sidebar'); $(this).removeClass('active'); $('.subdrop + ul').slideUp(); localStorage.removeItem('screenModeNightTokenState', 'night'); setTimeout(function () { $("body").addClass("mini-sidebar"); $(".header-left").removeClass("active"); }, 100); }
         return false;
     }); if (localStorage.getItem('screenModeNightTokenState') == 'night') { setTimeout(function () { $("body").removeClass("mini-sidebar"); $(".header-left").addClass("active"); }, 100); }
-    $('.submenus').on('click', function () { $('body').addClass('sidebarrightmenu'); }); $('#searchdiv').on('click', function () { $('.searchinputs').addClass('show'); }); $('.search-addon span').on('click', function () { $('.searchinputs').removeClass('show'); }); $(document).on('click', '#filter_search', function () { $('#filter_inputs').slideToggle("slow"); }); $(document).on('click', '#filter_search1', function () { $('#filter_inputs1').slideToggle("slow"); }); $(document).on('click', '#filter_search2', function () { $('#filter_inputs2').slideToggle("slow"); }); $(document).on('click', '#filter_search', function () { $('#filter_search').toggleClass("setclose"); }); $(document).on("click", ".productset", function () { $(this).toggleClass("active"); }); $('.inc.button').click(function () { var $this = $(this), $input = $this.prev('input'), $parent = $input.closest('div'), newValue = parseInt($input.val()) + 1; $parent.find('.inc').addClass('a' + newValue); $input.val(newValue); newValue += newValue; }); $('.dec.button').click(function () { var $this = $(this), $input = $this.next('input'), $parent = $input.closest('div'), newValue = parseInt($input.val()) - 1; console.log($parent); $parent.find('.inc').addClass('a' + newValue); $input.val(newValue); newValue += newValue; }); if ($('.custom-file-container').length > 0) {
+    $('.submenus').on('click', function () { $('body').addClass('sidebarrightmenu'); }); $('#searchdiv').on('click', function () { $('.searchinputs').addClass('show'); }); $('.search-addon span').on('click', function () { $('.searchinputs').removeClass('show'); }); $(document).on('click', '#filter_search', function () { $('#filter_inputs').slideToggle("slow"); }); $(document).on('click', '#filter_search1', function () { $('#filter_inputs1').slideToggle("slow"); }); $(document).on('click', '#filter_search2', function () { $('#filter_inputs2').slideToggle("slow"); }); $(document).on('click', '#filter_search', function () { $('#filter_search').toggleClass("setclose"); }); $(document).on('click', '#filter_search1', function () { $('#filter_search1').toggleClass("setclose"); }); $(document).on("click", ".productset", function () { $(this).toggleClass("active"); }); $('.inc.button').click(function () { var $this = $(this), $input = $this.prev('input'), $parent = $input.closest('div'), newValue = parseInt($input.val()) + 1; $parent.find('.inc').addClass('a' + newValue); $input.val(newValue); newValue += newValue; }); $('.dec.button').click(function () { var $this = $(this), $input = $this.next('input'), $parent = $input.closest('div'), newValue = parseInt($input.val()) - 1; console.log($parent); $parent.find('.inc').addClass('a' + newValue); $input.val(newValue); newValue += newValue; }); if ($('.custom-file-container').length > 0) {
         var firstUpload = new FileUploadWithPreview('myFirstImage')
         var secondUpload = new FileUploadWithPreview('mySecondImage')
     }
@@ -135,7 +135,7 @@ $(document).ready(function () {
 document.addEventListener("DOMContentLoaded", function () { let e = window.location.pathname; document.querySelectorAll("#sidebar-menu a").forEach(function (t) { if (t.href.includes(e)) { let c = t.closest("li"); if (c && (c.classList.add("active"), c.closest(".submenu"))) { let s = c.closest(".submenu"); s.classList.add("active"), s.querySelector(".menu-arrow").classList.add("open") } } }) });
 function previewImage(input, previewId) { var file = input.files[0]; if (file) { var reader = new FileReader(); reader.onload = function (e) { document.getElementById(previewId).src = e.target.result; }; reader.readAsDataURL(file); } }
 
-function fill(productName, price, currencySymbol) {
+function fillProduct(productName, price, currencySymbol) {
     // console.log("Selected Product!!!:", productName, price, currencySymbol);
     // Set the selected product name in the input field
     $('#search').val(productName);
@@ -347,7 +347,7 @@ $(document).ready(function () {
     $("#stock_search").on("focus", function () {
         $(this).val($(this).val());
     });
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#invoiceSelect').select2({
             placeholder: "Choose Invoice",
             allowClear: true
@@ -404,6 +404,7 @@ $(document).ready(function () {
             var price = parseFloat(selectedOption.attr("data-price")) || 0; // Convert to float
             var subtotal = parseFloat(selectedOption.attr("data-subtotal")) || 0;
             var discount = parseFloat(selectedOption.attr("data-discount")) || 0;
+            var discountPerUnit = discount / maxQuantity; // Calculate discount per unit
             var totalTax = parseFloat(selectedOption.attr("data-tax")) || 0;
             var taxPerUnit = totalTax / maxQuantity; // Calculate tax per unit
             var deleteIconUrl = siteUrl + "assets/img/icons/delete.svg";
@@ -411,9 +412,9 @@ $(document).ready(function () {
                                 <td>${productName}</td>
                                 <td><input type="number" class="form-control return-qty" style="width:100px;" min="1" max="${maxQuantity}" value="1"></td>
                                 <td class="price">${price.toFixed(2)}</td>
-                                <td class="discount">${discount.toFixed(2)}</td>
+                                <td class="discount" data-discount-per-unit="${discountPerUnit.toFixed(2)}">${discountPerUnit.toFixed(2)}</td>
                                 <td class="tax" data-tax-per-unit="${taxPerUnit.toFixed(2)}">${taxPerUnit.toFixed(2)}</td>
-                                <td class="subtotal">${(price + taxPerUnit - discount).toFixed(2)}</td>
+                                <td class="subtotal">${(price + taxPerUnit - discountPerUnit).toFixed(2)}</td>
                                 <td><a href="javascript:void(0);" class="delete-set"><img src="${deleteIconUrl}" alt="svg"></a></td>
                             </tr>`;
             $("#saleReturnTable").append(productRow);
@@ -427,13 +428,16 @@ $(document).ready(function () {
         var quantity = parseInt($(this).val()) || 1;
         var maxQuantity = parseInt($(this).attr("max")) || 1;
         var price = parseFloat(row.find(".price").text()) || 0;
-        var discount = parseFloat(row.find(".discount").text()) || 0;
+        var discountPerUnit = parseFloat(row.find(".discount").attr("data-discount-per-unit")) || 0; // Get tax per unit
+        var discount = discountPerUnit * quantity;
         var taxPerUnit = parseFloat(row.find(".tax").attr("data-tax-per-unit")) || 0; // Get tax per unit
         var taxAmount = taxPerUnit * quantity; // Correct tax calculation based on quantity
         var subtotal = (price * quantity) + taxAmount - discount; // Correct subtotal calculation
+        row.find(".discount").text(discount.toFixed(2)); // Update tax field
         row.find(".tax").text(taxAmount.toFixed(2)); // Update tax field
         row.find(".subtotal").text(subtotal.toFixed(2)); // Update subtotal field
         updateTotalAmount();
+        console.log("----------------------------",taxPerUnit);
     });
     // Remove product row when "X" button is clicked
     $(document).on("click", ".delete-set", function () {
@@ -465,15 +469,13 @@ $(document).ready(function () {
                 subtotal: subtotal
             });
         });
-        var totalAmount = totalSubtotal + totalTax - totalDiscount;
+        var totalAmount = totalSubtotal;
         // Update hidden input fields
         $("#return_total_amount").val(totalAmount.toFixed(2));
         $("#sale_return_item_data").val(JSON.stringify(saleReturnItemData));
         // Update UI
         $("input[name='sale-paid-payment']").val(totalAmount.toFixed(2));
     }
-});
-$(document).ready(function () {
     $("#salereturnForm").submit(function (event) {
         var saleReturnItems = [];
 
@@ -640,8 +642,6 @@ $(document).ready(function () {
         // Update UI
         $("input[name='purchase-paid-payment']").val(totalAmount.toFixed(2));
     }
-});
-$(document).ready(function () {
     $("#purchasereturnForm").submit(function (event) {
         var purchaseReturnItems = [];
 
@@ -673,7 +673,6 @@ $(document).ready(function () {
         console.log("Purchase Return Data:", purchaseReturnItems);
     });
 });
-
 
 $(document).ready(function () {
     $("#filterSaleForm").on("submit", function (e) {
@@ -731,6 +730,30 @@ $(document).ready(function () {
             url: "fetch-report-value.php",
             type: "POST",
             data: $(this).serialize() + "&report_type=customer",
+            success: function (response) {
+                $("tbody").html(response);
+            }
+        });
+    });
+    $("#filterPTaxForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "fetch-report-value.php",
+            type: "POST",
+            data: $(this).serialize() + "&report_type=purchase_tax",
+            success: function (response) {
+                $("tbody").html(response);
+            }
+        });
+    });
+    $("#filterCTaxForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "fetch-report-value.php",
+            type: "POST",
+            data: $(this).serialize() + "&report_type=sale_tax",
             success: function (response) {
                 $("tbody").html(response);
             }

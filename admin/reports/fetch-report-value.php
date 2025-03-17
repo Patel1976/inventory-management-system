@@ -246,4 +246,95 @@ elseif ($report_type === 'customer') {
     }
     echo $output;
 }
+elseif ($report_type === 'purchase_tax') {
+    $query = "
+        SELECT s.id AS supplier_id, s.name AS supplier_name, s.image AS supplier_image,
+               COALESCE(SUM(p.ptotal_amount), 0) AS total_amount,
+               COALESCE(SUM(p.ptotal_amount * t.tax_rate / 100), 0) AS tax
+        FROM suppliers s
+        LEFT JOIN purchases p ON s.id = p.supplier_id
+        LEFT JOIN tax_rates t ON p.ptax_id = t.id
+        WHERE 1=1";
+
+    // Date Filters
+    if (!empty($from_date)) {
+        $from_date = mysqli_real_escape_string($conn, $from_date);
+        $query .= " AND p.purchase_date >= '$from_date'";
+    }
+
+    if (!empty($to_date)) {
+        $to_date = mysqli_real_escape_string($conn, $to_date);
+        $query .= " AND p.purchase_date <= '$to_date'";
+    }
+
+    $query .= " GROUP BY s.id, s.name, s.image ORDER BY s.name ASC";
+
+    $result = mysqli_query($conn, $query);
+
+    $output = '';
+    while ($row = mysqli_fetch_assoc($result)) {
+        $supplier_name = $row['supplier_name'];
+        $image_path = !empty($row['supplier_image']) ? SITE_URL . "uploads/people/" . $row['supplier_image'] : SITE_URL . "assets/img/placeholder.png";
+        $total_amount = number_format($row['total_amount'], 2);
+        $tax_amount = number_format($row['tax'], 2);
+
+        $output .= "
+            <tr>
+                <td>
+                    <a class='align-middle product-img'>
+                        <img src='$image_path' alt='Brand Image' width='40'>
+                    </a>
+                    <a class='product-name'>$supplier_name</a>
+                </td>
+                <td>{$total_amount}</td>
+                <td>{$tax_amount}</td>
+            </tr>";
+    }
+    echo $output;
+}
+elseif ($report_type === 'sale_tax') {
+    $query = "
+        SELECT c.id AS customer_id, c.name AS customer_name, c.image AS customer_image,
+               COALESCE(SUM(s.total_amount), 0) AS total_amount,
+            COALESCE(SUM(s.total_amount * t.tax_rate / 100), 0) AS tax
+        FROM customers c
+        LEFT JOIN sales s ON c.id = s.customer_id
+        LEFT JOIN tax_rates t ON s.order_tax_id = t.id
+        WHERE 1=1";
+    // Date Filters
+    if (!empty($from_date)) {
+        $from_date = mysqli_real_escape_string($conn, $from_date);
+        $query .= " AND s.order_date >= '$from_date'";
+    }
+
+    if (!empty($to_date)) {
+        $to_date = mysqli_real_escape_string($conn, $to_date);
+        $query .= " AND s.order_date <= '$to_date'";
+    }
+
+    $query .= " GROUP BY c.id, c.name, c.image ORDER BY c.name ASC";
+
+    $result = mysqli_query($conn, $query);
+
+    $output = '';
+    while ($row = mysqli_fetch_assoc($result)) {
+        $supplier_name = $row['customer_name'];
+        $image_path = !empty($row['customer_image']) ? SITE_URL . "uploads/people/" . $row['customer_image'] : SITE_URL . "assets/img/placeholder.png";
+        $total_amount = number_format($row['total_amount'], 2);
+        $tax_amount = number_format($row['tax'], 2);
+
+        $output .= "
+            <tr>
+                <td>
+                    <a class='align-middle product-img'>
+                        <img src='$image_path' alt='Customer Image' width='40'>
+                    </a>
+                    <a class='product-name'>$supplier_name</a>
+                </td>
+                <td>{$total_amount}</td>
+                <td>{$tax_amount}</td>
+            </tr>";
+    }
+    echo $output;
+}
 ?>

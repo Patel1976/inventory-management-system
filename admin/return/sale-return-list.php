@@ -115,11 +115,23 @@ if (mysqli_num_rows($result) > 0) {
                                             $productQuery = "SELECT product_name FROM sale_return_items WHERE sale_return_id = " . $row['id'] . " LIMIT 1";
                                             $productResult = mysqli_query($conn, $productQuery);
                                             $product = mysqli_fetch_assoc($productResult);
+                                            // Set default product image
+                                            $productImage = SITE_URL . "assets/img/product/default.png";
+                                            if ($product) {
+                                                $productName = mysqli_real_escape_string($conn, $product['product_name']);
+                                                $imageQuery = "SELECT image FROM products WHERE name = '$productName' LIMIT 1";
+                                                $imageResult = mysqli_query($conn, $imageQuery);
+                                                if ($imageRow = mysqli_fetch_assoc($imageResult)) {
+                                                    $productImage = SITE_URL . "uploads/products/" . $imageRow['image'];
+                                                }
+                                            }
                                             ?>
                                             <a href="javascript:void(0);" class="product-img">
-                                                <img src="<?php echo SITE_URL; ?>assets/img/product/product6.jpg" alt="product">
+                                                <img src="<?php echo $productImage; ?>" alt="product" style="width:40px;">
                                             </a>
-                                            <a href="javascript:void(0);"><?php echo $product['product_name']; ?></a>
+                                            <a href="javascript:void(0);">
+                                                <?php echo isset($product['product_name']) ? $product['product_name'] : 'N/A'; ?>
+                                            </a>
                                         </td>
                                         <td><?php echo $row['return_date']; ?></td> <!-- Date stored as text format -->
                                         <td><?php echo $row['customer_name']; ?></td>

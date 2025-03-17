@@ -31,7 +31,7 @@ $result = mysqli_query($conn, $query);
                 <div class="table-top">
                     <div class="search-set">
                         <div class="search-path">
-                            <a class="btn btn-filter" id="filter_search">
+                            <a class="btn btn-filter" id="filter_search1">
                                 <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
                                 <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg" alt="img"></span>
                             </a>

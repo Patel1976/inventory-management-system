@@ -17,7 +17,7 @@ if (isset($_POST['search'])) {
             $name = $row['name'];
             $price = $row['price'];
 
-            echo "<li onclick='fill(\"$name\", \"$price\", \"$currencySymbol\")'>$name - $currencySymbol$price</li>";
+            echo "<li onclick='fillProduct(\"$name\", \"$price\", \"$currencySymbol\")'>$name - $currencySymbol$price</li>";
         }
     } else {
         echo "<li>No products found</li>";
