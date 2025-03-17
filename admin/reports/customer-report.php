@@ -1,17 +1,41 @@
-<?php include('../../include/header.php'); ?>
+<?php include('../../login_check.php');
+include('../../include/header.php');
+include('../../db_connection.php');
+
+$query = "
+    SELECT c.id AS customer_id, c.name AS customer_name, c.image AS customer_image,
+           COALESCE(SUM(si.qty), 0) AS total_items,
+           COALESCE(SUM(s.total_amount), 0) AS total_amount,
+           COALESCE(SUM(s.paid_amount), 0) AS paid_amount,
+           (COALESCE(SUM(s.total_amount), 0) - COALESCE(SUM(s.paid_amount), 0)) AS due_amount
+    FROM customers c
+    LEFT JOIN sales s ON c.id = s.customer_id
+    LEFT JOIN sale_items si ON s.id = si.sale_id
+    GROUP BY c.id, c.name, c.image
+    ORDER BY c.name ASC;
+";
+
+$result = mysqli_query($conn, $query);
+?>
 
 <div class="page-wrapper">
     <div class="content">
         <div class="page-header">
             <div class="page-title">
                 <h4>Customer Report</h4>
-                <h6>Manage your Customer Report</h6>
+                <h6>Manage Your Customer Report</h6>
             </div>
         </div>
         <div class="card">
             <div class="card-body">
                 <div class="table-top">
                     <div class="search-set">
+                        <div class="search-path">
+                            <a class="btn btn-filter" id="filter_search">
+                                <img src="<?php echo SITE_URL; ?>assets/img/icons/filter.svg" alt="img">
+                                <span><img src="<?php echo SITE_URL; ?>assets/img/icons/closes.svg" alt="img"></span>
+                            </a>
+                        </div>
                         <div class="search-input">
                             <a class="btn btn-searchset"><img
                                     src="<?php echo SITE_URL; ?>assets/img/icons/search-white.svg" alt="img"></a>
@@ -34,152 +58,79 @@
                         </ul>
                     </div>
                 </div>
-
+                <form id="filterCustomerForm">
+                    <div class="card" id="filter_inputs">
+                        <div class="card-body pb-0">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <div class="input-groupicon">
+                                            <input type="text" placeholder="From Date" name="from_date"
+                                                value="<?php echo isset($_GET['from_date']) ? $_GET['from_date'] : ''; ?>"
+                                                class="datetimepicker">
+                                            <div class="addonset">
+                                                <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
+                                                    alt="img">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <div class="input-groupicon">
+                                            <input type="text" placeholder="To Date" name="to_date"
+                                                value="<?php echo isset($_GET['to_date']) ? $_GET['to_date'] : ''; ?>"
+                                                class="datetimepicker">
+                                            <div class="addonset">
+                                                <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg"
+                                                    alt="img">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-filters">
+                                            <img src="<?php echo SITE_URL; ?>assets/img/icons/search-whites.svg"
+                                                alt="img">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 <div class="table-responsive">
-                    <table class="table datanew">
+                    <table class="table datanew-report">
                         <thead>
                             <tr>
-                                <th>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </th>
-                                <th>Customer code</th>
-                                <th>Customer name </th>
-                                <th>Amount</th>
-                                <th>Paid</th>
-                                <th>Amount due</th>
-                                <th>Status</th>
-                                <th>Paument Status</th>
+                                <th>Customer</th>
+                                <th>Total Items</th>
+                                <th>Total Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Due Amount</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>CT_1001</td>
-                                <td>Thomas21</td>
-                                <td>1500.00</td>
-                                <td>1500.00</td>
-                                <td>1500.00</td>
-                                <td><span class="badges bg-lightgreen">Completed</span></td>
-                                <td><span class="badges bg-lightgreen">Paid</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>CT_1002</td>
-                                <td>504Benjamin</td>
-                                <td>10.00</td>
-                                <td>10.00</td>
-                                <td>10.00</td>
-                                <td><span class="badges bg-lightgreen">Completed</span></td>
-                                <td><span class="badges bg-lightred">Overdue</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>CT_1003</td>
-                                <td>James 524</td>
-                                <td>10.00</td>
-                                <td>10.00</td>
-                                <td>10.00</td>
-                                <td><span class="badges bg-lightgreen">Completed</span></td>
-                                <td><span class="badges bg-lightred">Overdue</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>CT_1004</td>
-                                <td>Bruklin2022</td>
-                                <td>10.00</td>
-                                <td>10.00</td>
-                                <td>10.00</td>
-                                <td><span class="badges bg-lightgreen">Completed</span></td>
-                                <td><span class="badges bg-lightgreen">Paid</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>CT_1005</td>
-                                <td>BeverlyWIN25</td>
-                                <td>150.00</td>
-                                <td>150.00</td>
-                                <td>150.00</td>
-                                <td><span class="badges bg-lightgreen">Completed</span></td>
-                                <td><span class="badges bg-lightred">Overdue</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>CT_1006</td>
-                                <td>BHR256</td>
-                                <td>100.00</td>
-                                <td>100.00</td>
-                                <td>100.00</td>
-                                <td><span class="badges bg-lightgreen">Completed</span></td>
-                                <td><span class="badges bg-lightred">Overdue</span></td>
-                            </tr>
+                            <?php while ($row = mysqli_fetch_assoc($result)) { 
+                                $image_path = !empty($row['customer_image']) ? SITE_URL . "uploads/people/" . $row['customer_image'] : SITE_URL . "assets/img/placeholder.png";
+                                ?>
+                                <tr>
+                                    <td>
+                                        <a class="align-middle product-img">
+                                            <img src='<?php echo $image_path; ?>' alt="Brand Image" width="40">
+                                        </a>
+                                        <a><?php echo $row['customer_name']; ?></a>
+                                    </td>
+                                    <td><?php echo $row['total_items']; ?></td>
+                                    <td><?php echo number_format($row['total_amount'], 2); ?></td>
+                                    <td><?php echo number_format($row['paid_amount'], 2); ?></td>
+                                    <td><?php echo number_format($row['due_amount'], 2); ?></td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="searchpart">
-    <div class="searchcontent">
-        <div class="searchhead">
-            <h3>Search </h3>
-            <a id="closesearch"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
-        </div>
-        <div class="searchcontents">
-            <div class="searchparts">
-                <input type="text" placeholder="search here">
-                <a class="btn btn-searchs">Search</a>
-            </div>
-            <div class="recentsearch">
-                <h2>Recent Search</h2>
-                <ul>
-                    <li>
-                        <h6><i class="fa fa-search me-2"></i> Settings</h6>
-                    </li>
-                    <li>
-                        <h6><i class="fa fa-search me-2"></i> Report</h6>
-                    </li>
-                    <li>
-                        <h6><i class="fa fa-search me-2"></i> Invoice</h6>
-                    </li>
-                    <li>
-                        <h6><i class="fa fa-search me-2"></i> Sales</h6>
-                    </li>
-                </ul>
             </div>
         </div>
     </div>

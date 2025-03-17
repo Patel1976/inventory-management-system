@@ -15,12 +15,11 @@
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="purchase-tab" data-bs-toggle="tab"
                                 data-bs-target="#purchase" type="button" role="tab" aria-controls="purchase"
-                                aria-selected="true">Purchase Tax Report</button>
+                                aria-selected="true">Purchase Tax</button>
                         </li>
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="sale-tab" data-bs-toggle="tab" data-bs-target="#sale"
-                                type="button" role="tab" aria-controls="salw" aria-selected="false">Sale Tax
-                                Report</button>
+                                type="button" role="tab" aria-controls="salw" aria-selected="false">Sale Tax</button>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">

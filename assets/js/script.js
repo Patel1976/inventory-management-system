@@ -712,4 +712,28 @@ $(document).ready(function () {
             }
         });
     });
+    $("#filterSupplierForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "fetch-report-value.php",
+            type: "POST",
+            data: $(this).serialize() + "&report_type=supplier",
+            success: function (response) {
+                $("tbody").html(response);
+            }
+        });
+    });
+    $("#filterCustomerForm").on("submit", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "fetch-report-value.php",
+            type: "POST",
+            data: $(this).serialize() + "&report_type=customer",
+            success: function (response) {
+                $("tbody").html(response);
+            }
+        });
+    });
 });

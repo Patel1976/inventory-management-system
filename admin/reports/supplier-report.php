@@ -2,17 +2,28 @@
 include('../../include/header.php');
 include('../../db_connection.php');
 
+$query = "
+    SELECT s.id AS supplier_id, s.name AS supplier_name, s.image AS supplier_image,
+           COALESCE(SUM(pi.p_qty), 0) AS total_items,
+           COALESCE(SUM(p.ptotal_amount), 0) AS total_amount,
+           COALESCE(SUM(p.ppaid_payment), 0) AS paid_amount,
+           (COALESCE(SUM(p.ptotal_amount), 0) - COALESCE(SUM(p.ppaid_payment), 0)) AS due_amount
+    FROM suppliers s
+    LEFT JOIN purchases p ON s.id = p.supplier_id
+    LEFT JOIN purchase_items pi ON p.id = pi.purchase_id
+    GROUP BY s.id, s.name, s.image
+    ORDER BY s.name ASC;
+";
 
-$supp_query = "SELECT * FROM suppliers";
-$supp_result = mysqli_query($conn, $supp_query);
+$result = mysqli_query($conn, $query);
 ?>
 
 <div class="page-wrapper">
     <div class="content">
         <div class="page-header">
             <div class="page-title">
-                <h4>Purchase Report</h4>
-                <h6>Manage Your Purchase Report</h6>
+                <h4>Supplier Report</h4>
+                <h6>Manage Your Supplier Report</h6>
             </div>
         </div>
         <div class="card">
@@ -47,7 +58,7 @@ $supp_result = mysqli_query($conn, $supp_query);
                         </ul>
                     </div>
                 </div>
-                <form id="filterPurchaseForm">
+                <form id="filterSupplierForm">
                     <div class="card" id="filter_inputs">
                         <div class="card-body pb-0">
                             <div class="row">
@@ -77,19 +88,6 @@ $supp_result = mysqli_query($conn, $supp_query);
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <select class="select" name="supplier">
-                                            <option value="">Choose Supplier</option>
-                                            <?php
-                                            while ($supp_row = mysqli_fetch_assoc($supp_result)) {
-                                                $selected = ($purchase_id > 0 && isset($row['supplier_id']) && $row['supplier_id'] == $supp_row['id']) ? 'selected' : '';
-                                                echo "<option value='" . $supp_row['id'] . "' $selected>" . $supp_row['name'] . "</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="col-lg-1 col-sm-6 col-12">
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-filters">
@@ -114,7 +112,22 @@ $supp_result = mysqli_query($conn, $supp_query);
                             </tr>
                         </thead>
                         <tbody>
-                            
+                            <?php while ($row = mysqli_fetch_assoc($result)) { 
+                                $image_path = !empty($row['supplier_image']) ? SITE_URL . "uploads/people/" . $row['supplier_image'] : SITE_URL . "assets/img/placeholder.png";
+                                ?>
+                                <tr>
+                                    <td>
+                                        <a class="align-middle product-img">
+                                            <img src='<?php echo $image_path; ?>' alt="Brand Image" width="40">
+                                        </a>
+                                        <a><?php echo $row['supplier_name']; ?></a>
+                                    </td>
+                                    <td><?php echo $row['total_items']; ?></td>
+                                    <td><?php echo number_format($row['total_amount'], 2); ?></td>
+                                    <td><?php echo number_format($row['paid_amount'], 2); ?></td>
+                                    <td><?php echo number_format($row['due_amount'], 2); ?></td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

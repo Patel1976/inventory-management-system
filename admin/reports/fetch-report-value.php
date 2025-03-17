@@ -142,4 +142,108 @@ elseif ($report_type === 'inventory') {
     }
     echo $output;
 }
+elseif ($report_type === 'supplier') {
+    $query = "
+        SELECT s.id AS supplier_id, s.name AS supplier_name, s.image AS supplier_image,
+               COALESCE(SUM(pi.p_qty), 0) AS total_items,
+               COALESCE(SUM(p.ptotal_amount), 0) AS total_amount,
+               COALESCE(SUM(p.ppaid_payment), 0) AS paid_amount,
+               (COALESCE(SUM(p.ptotal_amount), 0) - COALESCE(SUM(p.ppaid_payment), 0)) AS due_amount
+        FROM suppliers s
+        LEFT JOIN purchases p ON s.id = p.supplier_id
+        LEFT JOIN purchase_items pi ON p.id = pi.purchase_id
+        WHERE 1=1"; 
+
+    // Add Date Filters
+    if (!empty($from_date)) {
+        $from_date = mysqli_real_escape_string($conn, $from_date);
+        $query .= " AND p.purchase_date >= '$from_date'";
+    }
+
+    if (!empty($to_date)) {
+        $to_date = mysqli_real_escape_string($conn, $to_date);
+        $query .= " AND p.purchase_date <= '$to_date'";
+    }
+
+    $query .= " GROUP BY s.id, s.name, s.image ORDER BY s.name ASC";
+
+    $result = mysqli_query($conn, $query);
+
+    $output = '';
+    while ($row = mysqli_fetch_assoc($result)) {
+        $supplier_name = $row['supplier_name'];
+        $total_items = $row['total_items'];
+        $image_path = !empty($row['supplier_image']) ? SITE_URL . "uploads/people/" . $row['supplier_image'] : SITE_URL . "assets/img/placeholder.png";
+        $total_amount = number_format($row['total_amount'], 2);
+        $paid_amount = number_format($row['paid_amount'], 2);
+        $due_amount = number_format($row['due_amount'], 2);
+
+        $output .= "
+            <tr>
+                <td>
+                    <a class='align-middle product-img'>
+                        <img src='$image_path' alt='Brand Image' width='40'>
+                    </a>
+                    <a class='product-name'>$supplier_name</a>
+                </td>
+                <td>{$total_items}</td>
+                <td>{$total_amount}</td>
+                <td>{$paid_amount}</td>
+                <td>{$due_amount}</td>
+            </tr>";
+    }
+    echo $output;
+}
+elseif ($report_type === 'customer') {
+    $query = "
+        SELECT c.id AS customer_id, c.name AS customer_name, c.image AS customer_image,
+               COALESCE(SUM(si.qty), 0) AS total_items,
+               COALESCE(SUM(s.total_amount), 0) AS total_amount,
+               COALESCE(SUM(s.paid_amount), 0) AS paid_amount,
+               (COALESCE(SUM(s.total_amount), 0) - COALESCE(SUM(s.paid_amount), 0)) AS due_amount
+        FROM customers c
+        LEFT JOIN sales s ON c.id = s.customer_id
+        LEFT JOIN sale_items si ON s.id = si.sale_id
+        WHERE 1=1"; 
+
+    // Add Date Filters
+    if (!empty($from_date)) {
+        $from_date = mysqli_real_escape_string($conn, $from_date);
+        $query .= " AND s.order_date >= '$from_date'";
+    }
+
+    if (!empty($to_date)) {
+        $to_date = mysqli_real_escape_string($conn, $to_date);
+        $query .= " AND s.order_date <= '$to_date'";
+    }
+
+    $query .= " GROUP BY c.id, c.name, c.image ORDER BY c.name ASC";
+
+    $result = mysqli_query($conn, $query);
+
+    $output = '';
+    while ($row = mysqli_fetch_assoc($result)) {
+        $customer_name = $row['customer_name'];
+        $total_items = $row['total_items'];
+        $image_path = !empty($row['customer_image']) ? SITE_URL . "uploads/people/" . $row['customer_image'] : SITE_URL . "assets/img/placeholder.png";
+        $total_amount = number_format($row['total_amount'], 2);
+        $paid_amount = number_format($row['paid_amount'], 2);
+        $due_amount = number_format($row['due_amount'], 2);
+
+        $output .= "
+            <tr>
+                <td>
+                    <a class='align-middle product-img'>
+                        <img src='$image_path' alt='Brand Image' width='40'>
+                    </a>
+                    <a class='product-name'>$customer_name</a>
+                </td>
+                <td>{$total_items}</td>
+                <td>{$total_amount}</td>
+                <td>{$paid_amount}</td>
+                <td>{$due_amount}</td>
+            </tr>";
+    }
+    echo $output;
+}
 ?>
