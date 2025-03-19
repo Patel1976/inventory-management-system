@@ -54,7 +54,7 @@ if ($category_id > 0) {
                                 <label> Category Image</label>
                                 <div class="image-upload">
                                     <input type="file" name="category_image" id="file" class="form-control"
-                                        onchange="previewImage(event)">
+                                        onchange="previewImage(this, 'imagePreview')">
                                     <div class="image-uploads">
                                         <img id="imagePreview"
                                             src="<?php echo !empty($image) ? $image : SITE_URL . 'assets/img/icons/upload.svg'; ?>"

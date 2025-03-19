@@ -202,7 +202,7 @@ $tax_result = mysqli_query($conn, $tax_query);
                                 <label>Product Image</label>
                                 <div class="image-upload">
                                     <input type="file" name="product_image" id="file" class="form-control"
-                                        onchange="previewImage(event)">
+                                        onchange="previewImage(this, 'imagePreview')">
                                     <div class="image-uploads">
                                         <img id="imagePreview" src="<?php echo !empty($image) ? $image : SITE_URL . 'assets/img/icons/upload.svg'; ?>" alt="img" style="max-width: 100px; max-height: 40px;">
                                         <h4>Drag and drop a file to upload</h4>

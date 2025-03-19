@@ -85,7 +85,7 @@ if ($customer_id > 0) {
                                 <label> Customer Photo</label>
                                 <div class="image-upload">
                                     <input type="file" name="customer_image" id="file" class="form-control"
-                                        onchange="previewImage(event)">
+                                        onchange="previewImage(this, 'imagePreview')">
                                     <div class="image-uploads">
                                         <img id="imagePreview"
                                             src="<?php echo $customer_image ? SITE_URL . 'uploads/people/' . $customer_image : SITE_URL . 'assets/img/icons/upload.svg'; ?>"
