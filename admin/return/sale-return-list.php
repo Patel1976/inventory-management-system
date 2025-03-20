@@ -15,7 +15,7 @@ $salesReturns = [];
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         // Fetch total amount calculation from sale_return_items
-        $itemsQuery = "SELECT SUM(subtotal + tax - discount) AS total_amount FROM sale_return_items WHERE sale_return_id = " . $row['id'];
+        $itemsQuery = "SELECT SUM(price * qty + tax - discount) AS total_amount FROM sale_return_items WHERE sale_return_id = " . $row['id'];
         $itemsResult = mysqli_query($conn, $itemsQuery);
         $itemsData = mysqli_fetch_assoc($itemsResult);
         

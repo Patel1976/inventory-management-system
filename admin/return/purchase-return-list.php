@@ -15,7 +15,7 @@ $purchasesReturns = [];
 if (mysqli_num_rows($result) > 0) {
     while ($row = mysqli_fetch_assoc($result)) {
         // Fetch total amount calculation from purchase_return_items
-        $itemsQuery = "SELECT SUM(subtotal + tax - discount) AS total_amount FROM purchase_return_items WHERE purchase_return_id = " . $row['id'];
+        $itemsQuery = "SELECT SUM(unit_price * quantity + tax - discount) AS total_amount FROM purchase_return_items WHERE purchase_return_id = " . $row['id'];
         $itemsResult = mysqli_query($conn, $itemsQuery);
         $itemsData = mysqli_fetch_assoc($itemsResult);
         
@@ -45,11 +45,11 @@ if (mysqli_num_rows($result) > 0) {
         <?php 
             if (isset($_GET['msg'])) {
                 if ($_GET['msg'] == 'deleted') {
-                    echo "<div class='alert alert-danger'>purchase Return deleted successfully!</div>";
+                    echo "<div class='alert alert-danger'>Purchase Return deleted successfully!</div>";
                 } elseif ($_GET['msg'] == 'success') {
-                    echo "<div class='alert alert-success'>purchase Return added successfully!</div>";
+                    echo "<div class='alert alert-success'>Purchase Return added successfully!</div>";
                 } elseif ($_GET['msg'] == 'updated') {
-                    echo "<div class='alert alert-success'>purchase Return updated successfully!</div>";
+                    echo "<div class='alert alert-success'>Purchase Return updated successfully!</div>";
                 }
             }
         ?>
@@ -116,9 +116,19 @@ if (mysqli_num_rows($result) > 0) {
                                             $productQuery = "SELECT product_name FROM purchase_return_items WHERE purchase_return_id = " . $row['id'] . " LIMIT 1";
                                             $productResult = mysqli_query($conn, $productQuery);
                                             $product = mysqli_fetch_assoc($productResult);
+                                            // Set default product image
+                                            $productImage = SITE_URL . "assets/img/product/default.png";
+                                            if ($product) {
+                                                $productName = mysqli_real_escape_string($conn, $product['product_name']);
+                                                $imageQuery = "SELECT image FROM products WHERE name = '$productName' LIMIT 1";
+                                                $imageResult = mysqli_query($conn, $imageQuery);
+                                                if ($imageRow = mysqli_fetch_assoc($imageResult)) {
+                                                    $productImage = SITE_URL . "uploads/products/" . $imageRow['image'];
+                                                }
+                                            }
                                             ?>
                                             <a href="javascript:void(0);" class="product-img">
-                                                <img src="<?php echo SITE_URL; ?>assets/img/product/product6.jpg" alt="product">
+                                                <img src="<?php echo $productImage; ?>" alt="product">
                                             </a>
                                             <a href="javascript:void(0);"><?php echo $product['product_name']; ?></a>
                                         </td>

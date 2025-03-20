@@ -34,6 +34,7 @@
 <script src="<?php echo SITE_URL; ?>assets/js/buttons.print.min.js"></script>
 
 <script src="<?php echo SITE_URL; ?>assets/js/script.js"></script>
+<script src="<?php echo SITE_URL; ?>assets/js/custom.js"></script>
 </body>
 
 </html>

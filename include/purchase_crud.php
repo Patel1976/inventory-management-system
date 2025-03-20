@@ -35,6 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_purchase'])) {
                 echo "Error inserting purchase item: " . mysqli_error($conn);
                 exit();
             }
+            // Update product quantity (decrease stock)
+            $update_stock_query = "UPDATE products SET quantity = quantity + '$qty' WHERE name = '$productName'";
+            if (!mysqli_query($conn, $update_stock_query)) {
+                echo "Error updating product stock: " . mysqli_error($conn);
+                exit();
+            }
         }
         // Redirect to purchase list with success message
         header("Location: ../admin/purchase/purchase-list.php?msg=success");
@@ -78,13 +84,30 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_purchase'])
             $price = floatval($item['price']);
             $qty = intval($item['qty']);
             $subtotal = floatval($item['subtotal']);
-            
+
             // Check if the item exists for the given purchase_id and product
-            $check_query = "SELECT id FROM purchase_items WHERE purchase_id = '$purchase_id' AND product_name = '$productName'";
+            $check_query = "SELECT id, p_qty FROM purchase_items WHERE purchase_id = '$purchase_id' AND product_name = '$productName'";
             $result = mysqli_query($conn, $check_query);
 
             if (mysqli_num_rows($result) > 0) {
-                // Update existing item
+                // Item exists, fetch previous quantity
+                $row = mysqli_fetch_assoc($result);
+                $previous_qty = intval($row['p_qty']);
+
+                // Calculate difference
+                if ($qty > $previous_qty) {
+                    $diff = $qty - $previous_qty;
+                    // Increase product stock
+                    $update_stock = "UPDATE products SET quantity = quantity + $diff WHERE name = '$productName'";
+                    mysqli_query($conn, $update_stock);
+                } elseif ($qty < $previous_qty) {
+                    $diff = $previous_qty - $qty;
+                    // Decrease product stock
+                    $update_stock = "UPDATE products SET quantity = quantity - $diff WHERE name = '$productName'";
+                    mysqli_query($conn, $update_stock);
+                }
+
+                // Update purchase item
                 $update_query = "UPDATE purchase_items SET 
                                     p_price = '$price', 
                                     p_qty = '$qty', 
@@ -92,10 +115,14 @@ elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_purchase'])
                                  WHERE purchase_id = '$purchase_id' AND product_name = '$productName'";
                 mysqli_query($conn, $update_query);
             } else {
-                // Insert new item if it doesn't exist
+                // New item, insert it and increase stock
                 $insert_query = "INSERT INTO purchase_items (purchase_id, product_name, p_price, p_qty, p_subtotal) 
                                 VALUES ('$purchase_id', '$productName', '$price', '$qty', '$subtotal')";
                 mysqli_query($conn, $insert_query);
+
+                // Increase product stock for new item
+                $update_stock = "UPDATE products SET quantity = quantity + $qty WHERE name = '$productName'";
+                mysqli_query($conn, $update_stock);
             }
         }
 

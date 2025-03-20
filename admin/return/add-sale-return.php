@@ -15,6 +15,7 @@ $customer_id = "";
 $return_date = date('d-m-Y');
 $paid_payment = 0;
 $payment_type = "";
+$items = [];
 
 // Fetch sale return data if editing
 if ($sale_return_id > 0) {
@@ -30,10 +31,19 @@ if ($sale_return_id > 0) {
     // Fetch all items properly
     $items_query = "SELECT * FROM sale_return_items WHERE sale_return_id = $sale_return_id";
     $items_result = mysqli_query($conn, $items_query);
-    $items = [];
     while ($row = mysqli_fetch_assoc($items_result)) {
         $items[] = $row;
     }
+
+    // Fetch sale qty
+    $sale_id_query = "SELECT id FROM sales WHERE invoice_number = '$return_invoice'";
+    $sale_id_result = mysqli_query($conn, $sale_id_query);
+    $sale_id_row = mysqli_fetch_assoc($sale_id_result);
+    $sale_id = $sale_id_row['id'];
+    $sale_qty_query = "SELECT SUM(qty) AS total_quantity FROM sale_items WHERE sale_id = $sale_id";
+    $sale_qty_result = mysqli_query($conn, $sale_qty_query);
+    $sale_qty_row = mysqli_fetch_assoc($sale_qty_result);
+    $sale_qty = $sale_qty_row['total_quantity'];    
 }
 
 // Get the list of invoices
@@ -129,24 +139,29 @@ $pay_result = mysqli_query($conn, $pay_query);
                                 </thead>
                                 <tbody id="saleReturnTable">
                                     <?php if (!empty($items)) { ?>
-                                        <?php foreach ($items as $row) { ?>
+                                        <?php foreach ($items as $row) { 
+                                            $price = $row['price'];
+                                            $discount = $row['discount'] / $row['qty'];
+                                            $tax = $row['tax'] / $row['qty'];
+                                            $subtotal = $price - $discount + $tax;
+                                            ?>
                                             <tr>
                                                 <td><span class="productname"><?php echo htmlspecialchars($row['product_name']); ?></span></td>
-                                                <td><input type="number" name="sale-qty[]" class="form-control return-qty" style="width:100px;" value="1" min="1"></td>
-                                                <td><?php echo $currencySymbol; ?> <span class="price"><?php echo htmlspecialchars($row['price']); ?></span></td>
+                                                <td><input type="number" name="sale-qty[]" class="form-control return-qty" style="width:100px;" value="1" min="1" max="<?php echo $sale_qty; ?>"></td>
+                                                <td><?php echo $currencySymbol; ?> <span class="price"><?php echo $price; ?></span></td>
                                                 <td>
                                                     <?php echo $currencySymbol; ?> 
-                                                    <span class="discount" data-discount-per-unit="<?php echo htmlspecialchars($row['discount']) * htmlspecialchars($row['qty']); ?>">
-                                                        <?php echo htmlspecialchars($row['discount']); ?>
+                                                    <span class="discount" data-discount-per-unit="<?php echo $discount; ?>">
+                                                        <?php echo $discount; ?>
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <?php echo $currencySymbol; ?> 
-                                                    <span class="tax" data-tax-per-unit="<?php echo htmlspecialchars($row['tax']) * htmlspecialchars($row['qty']); ?>">
-                                                        <?php echo htmlspecialchars($row['tax']); ?>
+                                                    <span class="tax" data-tax-per-unit="<?php echo $tax; ?>">
+                                                        <?php echo $tax; ?>
                                                     </span>
                                                 </td>
-                                                <td><?php echo $currencySymbol; ?> <span class="subtotal"><?php echo htmlspecialchars($row['subtotal']); ?></span></td>
+                                                <td><?php echo $currencySymbol; ?> <span class="subtotal"><?php echo $subtotal; ?></span></td>
                                                 <td>
                                                     <a href="javascript:void(0);" class="delete-set"><img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="Delete"></a>
                                                 </td>
@@ -164,12 +179,18 @@ $pay_result = mysqli_query($conn, $pay_query);
                                 <label>Paid Payment</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><?php echo $currencySymbol; ?></span>
-                                    <input type="text" name="sale-paid-payment" 
-                                        value="<?php echo htmlspecialchars($paid_payment); ?>" required>
+                                    <?php
+                                        $total_payment = 0;
+                                        foreach ($items as $item) {
+                                            $subtotal = $item['price'] + ($item['tax'] / $item['qty']) - ($item['discount'] / $item['qty']);
+                                            $total_payment += $subtotal;
+                                        }
+                                    ?>
+                                    <input type="text" name="sale-paid-payment" value="<?php echo $total_payment; ?>" required>
                                         <select class="select form-control" name="payment-type" style="width:200px;">
                                             <!-- <option value="">Choose Payment Type</option> -->
                                             <?php while ($pay_row = mysqli_fetch_assoc($pay_result)) { ?>
-                                                <option value="<?php echo $pay_row['payment_name']; ?>" <?php echo ($pay_row['payment_name'] == $payment_type) ? 'selected' : ''; ?>>
+                                                <option value="<?php echo $pay_row['id']; ?>" <?php echo ($pay_row['payment_name'] == $payment_type) ? 'selected' : ''; ?>>
                                                     <?php echo $pay_row['payment_name']; ?>
                                                 </option>
                                             <?php } ?>

@@ -60,30 +60,55 @@ elseif (isset($_POST['update_sale_return'])) {
                           WHERE id = '$sale_return_id'";
 
     if (mysqli_query($conn, $updateReturnQuery)) {
-        // Delete old sale return items
+
+        // Step 1: Get last sale return items (old quantities)
+        $oldItems = [];
+        $oldItemsQuery = "SELECT product_name, qty FROM sale_return_items WHERE sale_return_id = '$sale_return_id'";
+        $oldItemsResult = mysqli_query($conn, $oldItemsQuery);
+        while ($row = mysqli_fetch_assoc($oldItemsResult)) {
+            $oldItems[$row['product_name']] = $row['qty'];
+        }
+
+        // Step 2: Delete old sale return items
         $deleteItemsQuery = "DELETE FROM sale_return_items WHERE sale_return_id = '$sale_return_id'";
         mysqli_query($conn, $deleteItemsQuery);
 
-        // Insert updated sale return items
+        // Step 3: Insert updated sale return items and adjust stock
         foreach ($sale_return_item_data as $item) {
             $product_name = $item['product_name'];
-            $quantity = $item['quantity'];
+            $new_quantity = $item['quantity'];
             $unit_price = $item['unit_price'];
             $discount = $item['discount'];
             $tax = $item['tax'];
             $subtotal = $item['subtotal'];
 
-            // Insert new item into sale_return_items table
+            // Insert new item
             $insertItemQuery = "INSERT INTO sale_return_items (sale_return_id, product_name, price, qty, discount, tax, subtotal) 
-                                VALUES ('$sale_return_id', '$product_name', '$unit_price', '$quantity', '$discount', '$tax', '$subtotal')";
+                                VALUES ('$sale_return_id', '$product_name', '$unit_price', '$new_quantity', '$discount', '$tax', '$subtotal')";
             mysqli_query($conn, $insertItemQuery);
+
+            // Step 4: Stock Adjustment Logic
+            $old_quantity = isset($oldItems[$product_name]) ? $oldItems[$product_name] : 0;
+            $difference = $new_quantity - $old_quantity;
+
+            if ($difference != 0) {
+                if ($difference > 0) {
+                    // New quantity > old quantity → Decrease stock
+                    $update_stock = "UPDATE products SET quantity = quantity + '$difference' WHERE name = '$product_name'";
+                } else {
+                    // New quantity < old quantity → Increase stock
+                    $diff_abs = abs($difference);
+                    $update_stock = "UPDATE products SET quantity = quantity - '$diff_abs' WHERE name = '$product_name'";
+                }
+                mysqli_query($conn, $update_stock);
+            }
         }
 
-        // Redirect to sale return list with success message
+        // Step 5: Redirect after successful update
         header("Location: ../admin/return/sale-return-list.php?msg=updated");
         exit();
     } else {
-        $_SESSION['error_msg'] = "Error updating sale return.";
+        echo "Error: " . mysqli_error($conn);
     }
 }
 
@@ -132,4 +157,76 @@ if (isset($_POST['add_purchase_return'])) {
         echo "Error: " . mysqli_error($conn);
     }
 }
+elseif (isset($_POST['update_purchase_return'])) {
+    $purchase_return_id = intval($_POST['purchase_return_id']);
+    $return_invoice = mysqli_real_escape_string($conn, $_POST['return_invoice']);
+    $supplier_id = intval($_POST['customer']);
+    $purchase_return_date = date('Y-m-d', strtotime($_POST['purchase_return_date']));
+    $shipping = floatval($_POST['shipping']);
+    $paid_payment = floatval($_POST['purchase-paid-payment']);
+    $payment_type = intval($_POST['payment-type']);
+    $purchase_return_item_data = json_decode($_POST['purchase_return_item_data'], true);
 
+    // Update purchase_returns table
+    $update_query = "UPDATE purchase_returns SET
+        return_invoice = '$return_invoice',
+        supplier_id = '$supplier_id',
+        purchase_return_date = '$purchase_return_date',
+        shipping = '$shipping',
+        paid_payment = '$paid_payment',
+        payment_type = '$payment_type'
+        WHERE id = '$purchase_return_id'";
+    
+    if (mysqli_query($conn, $update_query)) {
+
+        // Step 1: Get old purchase return items (quantities)
+        $oldItems = [];
+        $oldItemsQuery = "SELECT product_name, quantity FROM purchase_return_items WHERE purchase_return_id = '$purchase_return_id'";
+        $oldItemsResult = mysqli_query($conn, $oldItemsQuery);
+        while ($row = mysqli_fetch_assoc($oldItemsResult)) {
+            $oldItems[$row['product_name']] = $row['quantity'];
+        }
+
+        // Step 2: Delete old purchase return items
+        $delete_items_query = "DELETE FROM purchase_return_items WHERE purchase_return_id = '$purchase_return_id'";
+        mysqli_query($conn, $delete_items_query);
+
+        // Step 3: Insert updated purchase return items & adjust stock
+        foreach ($purchase_return_item_data as $item) {
+            $product_name = $item['product_name'];
+            $new_quantity = $item['quantity'];
+            $unit_price = $item['unit_price'];
+            $discount = $item['discount'];
+            $tax = $item['tax'];
+            $subtotal = $item['subtotal'];
+
+            // Insert new item
+            $insert_item_query = "INSERT INTO purchase_return_items (purchase_return_id, product_name, quantity, unit_price, discount, tax, subtotal) 
+            VALUES ('$purchase_return_id', '$product_name', '$new_quantity', '$unit_price', '$discount', '$tax', '$subtotal')";
+            mysqli_query($conn, $insert_item_query);
+
+            // Step 4: Stock Adjustment Logic
+            $old_quantity = isset($oldItems[$product_name]) ? $oldItems[$product_name] : 0;
+            $difference = $new_quantity - $old_quantity;
+
+            if ($difference != 0) {
+                if ($difference > 0) {
+                    // New quantity > old quantity → Increase stock
+                    $update_stock = "UPDATE products SET quantity = quantity - '$difference' WHERE name = '$product_name'";
+                } else {
+                    // New quantity < old quantity → Decrease stock
+                    $diff_abs = abs($difference);
+                    $update_stock = "UPDATE products SET quantity = quantity + '$diff_abs' WHERE name = '$product_name'";
+                }
+                mysqli_query($conn, $update_stock);
+            }
+        }
+
+        // Step 5: Redirect after successful update
+        header("Location: ../admin/return/purchase-return-list.php?msg=updated");
+        exit();
+
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+}

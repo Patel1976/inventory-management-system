@@ -228,7 +228,7 @@ $favicon = !empty($general_settings['favicon_icon']) ? SITE_URL . 'uploads/logo/
                                     Settings</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a href="<?= GENERAL_SETTINGS_URL ?>">General Settings</a></li>
-                                <li><a href="<?= EMAIL_SETTINGS_URL ?>">Email Settings</a></li>
+                                <!-- <li><a href="<?= EMAIL_SETTINGS_URL ?>">Email Settings</a></li> -->
                                 <li><a href="<?= PAYMENT_SETTINGS_URL ?>">Payment Settings</a></li>
                                 <li><a href="<?= CURRENCY_SETTINGS_URL ?>">Currency Settings</a></li>
                                 <!-- <li><a href="<?= PERMISSION_URL ?>">Group Permissions</a></li> -->

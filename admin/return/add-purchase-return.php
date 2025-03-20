@@ -8,11 +8,44 @@ $curr_result = mysqli_query($conn, $curr_query);
 $curr_row = mysqli_fetch_assoc($curr_result);
 $currencySymbol = $curr_row['currency_symbol'] ?? '$';
 
-$sale_return_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$purchase_invoice = "";
+$purchase_return_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $paid_payment = 0;
-$payment_type = 0;
+$supplier_id = "";
+$payment_type = "";
 $shipping = 0;
+$return_invoice ="";
+$return_date = date('d-m-Y');
+$items = [];
+
+// Fetch purchase return data if editing
+if ($purchase_return_id > 0) {
+    $query = "SELECT * FROM purchase_returns WHERE id = $purchase_return_id";
+    $result = mysqli_query($conn, $query);
+    if ($row = mysqli_fetch_assoc($result)) {
+        $return_invoice = $row['return_invoice'];
+        $supplier_id = $row['supplier_id'];
+        $return_date = date('d-m-Y', strtotime($row['purchase_return_date']));
+        $paid_payment = $row['paid_payment'];
+        $payment_type = $row['payment_type'];
+        $shipping = $row['shipping'];
+    }
+    // Fetch all items properly
+    $items_query = "SELECT * FROM purchase_return_items WHERE purchase_return_id = $purchase_return_id";
+    $items_result = mysqli_query($conn, $items_query);
+    while ($row = mysqli_fetch_assoc($items_result)) {
+        $items[] = $row;
+    }
+
+    // Fetch purchase qty
+    $purchase_id_query = "SELECT id FROM purchases WHERE purchase_invoice = '$return_invoice'";
+    $purchase_id_result = mysqli_query($conn, $purchase_id_query);
+    $purchase_id_row = mysqli_fetch_assoc($purchase_id_result);
+    $purchase_id = $purchase_id_row['id'];
+    $purchase_qty_query = "SELECT SUM(p_qty) AS total_quantity FROM purchase_items WHERE purchase_id = $purchase_id";
+    $purchase_qty_result = mysqli_query($conn, $purchase_qty_query);
+    $purchase_qty_row = mysqli_fetch_assoc($purchase_qty_result);
+    $purchase_qty = $purchase_qty_row['total_quantity'];    
+}
 
 // Get the latest invoice number from the database
 $inv_query = "SELECT purchase_invoice FROM purchases ORDER BY id DESC";
@@ -32,8 +65,8 @@ $pay_result = mysqli_query($conn, $pay_query);
         <input type="hidden" name="purchase_return_item_data" id="purchase_return_item_data">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Create Purchase Return</h4>
-                    <h6>Add/Update Purchase Return</h6>
+                    <h4><?php echo $purchase_return_id > 0 ? 'Edit' : 'Create'; ?> Purchase Return</h4>
+                    <h6><?php echo $purchase_return_id > 0 ? 'Update' : 'Add'; ?> Purchase Return Details</h6>
                 </div>
             </div>
             <div class="card">
@@ -46,7 +79,7 @@ $pay_result = mysqli_query($conn, $pay_query);
                                     <option value="">Choose Invoice</option>
                                     <?php while ($inv_row = mysqli_fetch_assoc($inv_result)) { ?>
                                         <option value="<?php echo $inv_row['purchase_invoice']; ?>"
-                                            <?php echo ($inv_row['purchase_invoice'] == $purchase_invoice) ? 'selected' : ''; ?>>
+                                            <?php echo ($inv_row['purchase_invoice'] == $return_invoice) ? 'selected' : ''; ?>>
                                             <?php echo $inv_row['purchase_invoice']; ?>
                                         </option>
                                     <?php } ?>
@@ -58,12 +91,13 @@ $pay_result = mysqli_query($conn, $pay_query);
                                 <label>Supplier Name</label>
                                 <select class="select" name="customer" required>
                                     <option value="">Choose Supplier</option>
-                                    <?php
-                                    while ($supp_row = mysqli_fetch_assoc($supp_result)) {
-                                        $selected = ($purchase_return_id > 0 && isset($row['supplier_id']) && $row['supplier_id'] == $supp_row['id']) ? 'selected' : '';
-                                        echo "<option value='" . $supp_row['id'] . "' $selected>" . $supp_row['name'] . "</option>";
-                                    }
-                                    ?>
+                                    
+                                    <?php while ($supp_row = mysqli_fetch_assoc($supp_result)) { ?>
+                                        <option value="<?php echo $supp_row['id']; ?>"
+                                            <?php echo ($supp_row['id'] == $supplier_id) ? 'selected' : ''; ?>>
+                                            <?php echo $supp_row['name']; ?>
+                                        </option>
+                                    <?php } ?>
                                 </select>
                             </div>
                         </div>
@@ -71,7 +105,7 @@ $pay_result = mysqli_query($conn, $pay_query);
                             <div class="form-group">
                                 <label>Return Date</label>
                                 <div class="input-groupicon">
-                                    <input type="text" name="purchase_return_date" class="datetimepicker">
+                                    <input type="text" name="purchase_return_date" class="datetimepicker" value="<?php echo $return_date; ?>">
                                     <div class="addonset">
                                         <img src="<?php echo SITE_URL; ?>assets/img/icons/calendars.svg" alt="img">
                                     </div>
@@ -104,7 +138,36 @@ $pay_result = mysqli_query($conn, $pay_query);
                                     </tr>
                                 </thead>
                                 <tbody id="purchaseReturnTable">
-                                    
+                                <?php if (!empty($items)) { ?>
+                                        <?php foreach ($items as $row) { 
+                                            $price = $row['unit_price'];
+                                            $discount = $row['discount'] / $row['quantity'];
+                                            $tax = $row['tax'] / $row['quantity'];
+                                            $subtotal = $price - $discount + $tax;
+                                            ?>
+                                            <tr>
+                                                <td><span class="productname"><?php echo htmlspecialchars($row['product_name']); ?></span></td>
+                                                <td><input type="number" name="sale-qty[]" class="form-control return-qty" style="width:100px;" value="1" min="1" max="<?php echo $purchase_qty; ?>"></td>
+                                                <td><?php echo $currencySymbol; ?> <span class="price"><?php echo $price; ?></span></td>
+                                                <td>
+                                                    <?php echo $currencySymbol; ?> 
+                                                    <span class="discount" data-discount-per-unit="<?php echo $discount; ?>">
+                                                        <?php echo $discount; ?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <?php echo $currencySymbol; ?> 
+                                                    <span class="tax" data-tax-per-unit="<?php echo $tax; ?>">
+                                                        <?php echo $tax; ?>
+                                                    </span>
+                                                </td>
+                                                <td><?php echo $currencySymbol; ?> <span class="subtotal"><?php echo $subtotal; ?></span></td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="delete-set"><img src="<?php echo SITE_URL; ?>assets/img/icons/delete.svg" alt="Delete"></a>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                    <?php } ?>
                                 </tbody>
                             </table>
                         </div>
@@ -126,8 +189,14 @@ $pay_result = mysqli_query($conn, $pay_query);
                                 <label>Paid Payment</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><?php echo $currencySymbol; ?></span>
-                                    <input type="text" name="purchase-paid-payment" 
-                                        value="<?php echo htmlspecialchars($paid_payment); ?>" required>
+                                    <?php
+                                        $total_payment = 0;
+                                        foreach ($items as $item) {
+                                            $subtotal = $item['unit_price'] + ($item['tax'] / $item['quantity']) - ($item['discount'] / $item['quantity']);
+                                            $total_payment += $subtotal;
+                                        }
+                                    ?>
+                                    <input type="text" name="purchase-paid-payment" value="<?php echo $total_payment; ?>" required>
                                         <select class="select form-control" name="payment-type" style="width:150px;">
                                             <!-- <option value="">Choose Payment Type</option> -->
                                             <?php while ($row = mysqli_fetch_assoc($pay_result)) { ?>
@@ -143,7 +212,7 @@ $pay_result = mysqli_query($conn, $pay_query);
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
-                            <input type="submit" class="btn btn-submit me-2" name="add_purchase_return" value="Submit">
+                            <input type="submit" class="btn btn-submit me-2" name="<?php echo $purchase_return_id > 0 ? 'update_purchase_return' : 'add_purchase_return'; ?>" value="<?php echo $purchase_return_id > 0 ? 'Update' : 'Submit'; ?>">
                             <input type="hidden" name="purchase_return_id" value="<?php echo $purchase_return_id; ?>">
                             <a href="purchase-return-list.php" class="btn btn-cancel">Cancel</a>
                         </div>
